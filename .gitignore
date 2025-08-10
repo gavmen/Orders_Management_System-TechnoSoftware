@@ -29,3 +29,7 @@ frontend/.env.production.local
 frontend/npm-debug.log*
 frontend/yarn-debug.log*
 frontend/yarn-error.log*
+
+# Pipeline Test Scripts
+test-pipeline.sh
+test-component.sh
