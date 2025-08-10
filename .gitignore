@@ -30,6 +30,9 @@ frontend/npm-debug.log*
 frontend/yarn-debug.log*
 frontend/yarn-error.log*
 
+# Maven Build Directory
+target/
+
 # Pipeline Test Scripts
 test-pipeline.sh
 test-component.sh
