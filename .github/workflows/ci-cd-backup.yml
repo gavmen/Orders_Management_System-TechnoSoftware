@@ -9,6 +9,7 @@ on:
 permissions:
   checks: write
   contents: read
+  security-events: write
 
 env:
   JAVA_VERSION: '17'
