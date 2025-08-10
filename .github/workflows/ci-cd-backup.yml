@@ -50,6 +50,7 @@ jobs:
     - name: Run tests
       run: mvn clean test -Dspring.profiles.active=test
       env:
+        DB_URL: jdbc:postgresql://localhost:5432/test_db
         DB_HOST: localhost
         DB_USERNAME: test_user
         DB_PASSWORD: test_pass
