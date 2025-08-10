@@ -1,0 +1,13 @@
+/home/gabriel/technoSoftware/src/test/java/com/empresa/logistica/repository/ItemPedidoRepositoryTest.java
+/home/gabriel/technoSoftware/src/test/java/com/empresa/logistica/repository/PedidoRepositoryTest.java
+/home/gabriel/technoSoftware/src/test/java/com/empresa/logistica/OrdersManagementSystemApplicationTests.java
+/home/gabriel/technoSoftware/src/test/java/com/empresa/logistica/repository/ProdutoRepositoryTest.java
+/home/gabriel/technoSoftware/src/test/java/com/empresa/logistica/repository/ClienteRepositoryTest.java
+/home/gabriel/technoSoftware/src/test/java/com/empresa/logistica/model/ItemPedidoTest.java
+/home/gabriel/technoSoftware/src/test/java/com/empresa/logistica/model/ClienteTest.java
+/home/gabriel/technoSoftware/src/test/java/com/empresa/logistica/util/TestDataBuilder.java
+/home/gabriel/technoSoftware/src/test/java/com/empresa/logistica/model/StatusPedidoTest.java
+/home/gabriel/technoSoftware/src/test/java/com/empresa/logistica/controller/HealthControllerTest.java
+/home/gabriel/technoSoftware/src/test/java/com/empresa/logistica/model/ProdutoTest.java
+/home/gabriel/technoSoftware/src/test/java/com/empresa/logistica/data/DataSqlLoadingTest.java
+/home/gabriel/technoSoftware/src/test/java/com/empresa/logistica/model/PedidoTest.java
