@@ -1,6 +1,6 @@
-# ER Diagram - Sistema de Gerenciamento de Pedidos
+# ER Diagram - Orders Management System
 
-## Diagrama de Entidade-Relacionamento
+## Entity-Relationship Diagram
 
 ```mermaid
 erDiagram
@@ -33,78 +33,78 @@ erDiagram
         decimal preco_unitario
     }
 
-    CLIENTE ||--o{ PEDIDO : "possui"
-    PEDIDO ||--o{ ITEM_PEDIDO : "contém"
-    PRODUTO ||--o{ ITEM_PEDIDO : "é usado em"
+    CLIENTE ||--o{ PEDIDO : "has"
+    PEDIDO ||--o{ ITEM_PEDIDO : "contains"
+    PRODUTO ||--o{ ITEM_PEDIDO : "is used in"
 ```
 
-## Descrição das Entidades
+## Entity Descriptions
 
 ### 1. CLIENTE
-- **id**: Chave primária, identificador único do cliente
-- **nome**: Nome completo do cliente (VARCHAR, 2-150 caracteres)
-- **limite_credito**: Limite de crédito disponível para o cliente (DECIMAL 15,2)
+- **id**: Primary key, unique client identifier
+- **nome**: Full client name (VARCHAR, 2-150 characters)
+- **limite_credito**: Available credit limit for client (DECIMAL 15,2)
 
 ### 2. PRODUTO  
-- **id**: Chave primária, identificador único do produto
-- **nome**: Nome do produto (VARCHAR, 2-150 caracteres)
-- **preco**: Preço unitário do produto (DECIMAL 15,2)
+- **id**: Primary key, unique product identifier
+- **nome**: Product name (VARCHAR, 2-150 characters)
+- **preco**: Unit price of product (DECIMAL 15,2)
 
 ### 3. PEDIDO
-- **id**: Chave primária, identificador único do pedido
-- **cliente_id**: Chave estrangeira referenciando CLIENTE
-- **data_pedido**: Data e hora de criação do pedido (TIMESTAMP)
-- **status**: Status do pedido ('APROVADO' ou 'REJEITADO')
-- **valor_total**: Valor total calculado do pedido (DECIMAL 15,2)
+- **id**: Primary key, unique order identifier
+- **cliente_id**: Foreign key referencing CLIENTE
+- **data_pedido**: Order creation date and time (TIMESTAMP)
+- **status**: Order status ('APROVADO' or 'REJEITADO')
+- **valor_total**: Calculated total order value (DECIMAL 15,2)
 
 ### 4. ITEM_PEDIDO
-- **id**: Chave primária, identificador único do item
-- **pedido_id**: Chave estrangeira referenciando PEDIDO
-- **produto_id**: Chave estrangeira referenciando PRODUTO
-- **quantidade**: Quantidade do produto no item (INTEGER >= 1)
-- **subtotal**: Subtotal calculado (quantidade × preço_unitário)
-- **preco_unitario**: Preço unitário do produto no momento do pedido
+- **id**: Primary key, unique item identifier
+- **pedido_id**: Foreign key referencing PEDIDO
+- **produto_id**: Foreign key referencing PRODUTO
+- **quantidade**: Product quantity in item (INTEGER >= 1)
+- **subtotal**: Calculated subtotal (quantity × unit_price)
+- **preco_unitario**: Product unit price at time of order
 
-## Relacionamentos
+## Relationships
 
-1. **CLIENTE → PEDIDO**: Um cliente pode ter muitos pedidos (1:N)
-2. **PEDIDO → ITEM_PEDIDO**: Um pedido pode ter muitos itens (1:N)
-3. **PRODUTO → ITEM_PEDIDO**: Um produto pode estar em muitos itens de pedidos (1:N)
+1. **CLIENTE → PEDIDO**: One client can have many orders (1:N)
+2. **PEDIDO → ITEM_PEDIDO**: One order can have many items (1:N)
+3. **PRODUTO → ITEM_PEDIDO**: One product can be in many order items (1:N)
 
-## Regras de Negócio
+## Business Rules
 
-### Validação de Crédito
-- O sistema calcula o crédito utilizado baseado nos pedidos aprovados dos últimos 30 dias
-- Quando um pedido é criado:
-  - Calcula valor_utilizado = soma de pedidos aprovados dos últimos 30 dias
-  - Calcula saldo_disponivel = limite_credito - valor_utilizado
-  - Se valor_total_pedido ≤ saldo_disponivel: status = 'APROVADO'
-  - Se valor_total_pedido > saldo_disponivel: status = 'REJEITADO'
-- Pedidos rejeitados são armazenados para auditoria, mas não afetam o cálculo de crédito
-- A janela de 30 dias é calculada a partir da data atual (rolling window)
+### Credit Validation
+- System calculates used credit based on approved orders from last 30 days
+- When an order is created:
+  - Calculates valor_utilizado = sum of approved orders from last 30 days
+  - Calculates saldo_disponivel = limite_credito - valor_utilizado
+  - If valor_total_pedido ≤ saldo_disponivel: status = 'APROVADO'
+  - If valor_total_pedido > saldo_disponivel: status = 'REJEITADO'
+- Rejected orders are stored for audit but don't affect credit calculation
+- 30-day window is calculated from current date (rolling window)
 
-### Consulta de Saldo em Tempo Real
-- Endpoint `/clientes/{id}/credito` fornece informações atualizadas
-- Cálculo dinâmico baseado na data atual
-- Retorna: limite_credito, valor_utilizado, saldo_disponivel
+### Real-time Balance Query
+- Endpoint `/clientes/{id}/credito` provides updated information
+- Dynamic calculation based on current date
+- Returns: limite_credito, valor_utilizado, saldo_disponivel
 
-### Cálculos Automáticos
+### Automatic Calculations
 - **subtotal** = quantidade × preco_unitario
-- **valor_total** = soma de todos os subtotais dos itens do pedido
-- **preco_unitario** é copiado do produto no momento da criação para manter histórico
-- **valor_utilizado** = soma dos valores de pedidos aprovados nos últimos 30 dias
+- **valor_total** = sum of all item subtotals in order
+- **preco_unitario** is copied from product at creation time to maintain history
+- **valor_utilizado** = sum of approved order values from last 30 days
 
-### Constraints e Validações
-- Todos os campos obrigatórios possuem validação NOT NULL
-- Preços e valores devem ser > 0,01
-- Quantidades devem ser >= 1
-- Nomes devem ter entre 2 e 150 caracteres
-- Status do pedido é controlado pela aplicação (enum: APROVADO, REJEITADO)
+### Constraints and Validations
+- All mandatory fields have NOT NULL validation
+- Prices and values must be > 0.01
+- Quantities must be >= 1
+- Names must be between 2 and 150 characters
+- Order status is controlled by application (enum: APROVADO, REJEITADO)
 
-## Índices Sugeridos
+## Suggested Indexes
 
 ```sql
--- Índices para melhor performance
+-- Indexes for better performance
 CREATE INDEX idx_pedido_cliente_id ON pedido(cliente_id);
 CREATE INDEX idx_pedido_data ON pedido(data_pedido);
 CREATE INDEX idx_pedido_status ON pedido(status);
@@ -112,22 +112,22 @@ CREATE INDEX idx_item_pedido_pedido_id ON item_pedido(pedido_id);
 CREATE INDEX idx_item_pedido_produto_id ON item_pedido(produto_id);
 ```
 
-## Exemplo de Dados
+## Sample Data
 
 ```sql
--- Exemplo de cliente
+-- Client example
 INSERT INTO cliente (nome, limite_credito) VALUES 
 ('João Silva Santos', 15000.00);
 
--- Exemplo de produto
+-- Product example
 INSERT INTO produto (nome, preco) VALUES 
 ('Notebook Dell Inspiron 15', 2800.00);
 
--- Exemplo de pedido aprovado
+-- Approved order example
 INSERT INTO pedido (cliente_id, data_pedido, status, valor_total) VALUES 
 (1, '2025-08-09 10:30:00', 'APROVADO', 2800.00);
 
--- Exemplo de item do pedido
+-- Order item example
 INSERT INTO item_pedido (pedido_id, produto_id, quantidade, subtotal, preco_unitario) VALUES 
 (1, 1, 1, 2800.00, 2800.00);
 ```

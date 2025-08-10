@@ -1,12 +1,12 @@
-# Arquitetura Técnica - Sistema de Gerenciamento de Pedidos
+# Technical Architecture - Orders Management System
 
-## Visão Geral da Arquitetura
+## Architecture Overview
 
-O Sistema de Gerenciamento de Pedidos segue uma arquitetura de três camadas (3-tier) com separação clara de responsabilidades:
+The Orders Management System follows a three-tier architecture (3-tier) with clear separation of responsibilities:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                        CAMADA DE APRESENTAÇÃO                  │
+│                     PRESENTATION LAYER                         │
 │  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐ │
 │  │   React App     │  │  Material-UI    │  │   Axios HTTP    │ │
 │  │   (Frontend)    │  │  Components     │  │    Client       │ │
@@ -16,7 +16,7 @@ O Sistema de Gerenciamento de Pedidos segue uma arquitetura de três camadas (3-
                               │ HTTP/REST API
                               ▼
 ┌─────────────────────────────────────────────────────────────────┐
-│                         CAMADA DE NEGÓCIO                      │
+│                        BUSINESS LAYER                          │
 │  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐ │
 │  │  Spring Boot    │  │  REST Controllers│  │   Service Layer │ │
 │  │   Backend       │  │                 │  │                 │ │
@@ -26,7 +26,7 @@ O Sistema de Gerenciamento de Pedidos segue uma arquitetura de três camadas (3-
                               │ JPA/Hibernate
                               ▼
 ┌─────────────────────────────────────────────────────────────────┐
-│                         CAMADA DE DADOS                        │
+│                         DATA LAYER                             │
 │  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐ │
 │  │   PostgreSQL    │  │   JPA Entities  │  │  Repository     │ │
 │  │   Database      │  │                 │  │    Layer       │ │
@@ -35,29 +35,29 @@ O Sistema de Gerenciamento de Pedidos segue uma arquitetura de três camadas (3-
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-## Stack Tecnológico
+## Technology Stack
 
-### Frontend (Camada de Apresentação)
-- **React 19.1.1**: Framework JavaScript para UI
-- **Material-UI 7.3.1**: Biblioteca de componentes UI
-- **Axios 1.11.0**: Cliente HTTP para comunicação com API
-- **Emotion**: Biblioteca CSS-in-JS para estilização
+### Frontend (Presentation Layer)
+- **React 19.1.1**: JavaScript framework for UI
+- **Material-UI 7.3.1**: UI components library
+- **Axios 1.11.0**: HTTP client for API communication
+- **Emotion**: CSS-in-JS library for styling
 
-### Backend (Camada de Negócio)
-- **Spring Boot 3.2.0**: Framework Java para aplicações web
-- **Spring Data JPA**: ORM e abstração de dados
-- **Spring Web MVC**: Controladores REST
-- **Java 17**: Linguagem de programação
-- **Maven**: Gerenciador de dependências
+### Backend (Business Layer)
+- **Spring Boot 3.2.0**: Java framework for web applications
+- **Spring Data JPA**: ORM and data abstraction
+- **Spring Web MVC**: REST controllers
+- **Java 17**: Programming language
+- **Maven**: Dependency manager
 
-### Banco de Dados (Camada de Dados)
-- **PostgreSQL 14+**: Banco de dados relacional
-- **HikariCP**: Pool de conexões
-- **Flyway**: Migração de banco de dados (futuro)
+### Database (Data Layer)
+- **PostgreSQL 14+**: Relational database
+- **HikariCP**: Connection pool
+- **Flyway**: Database migration (future)
 
-## Modelo de Dados
+## Data Model
 
-### Diagrama Entidade-Relacionamento
+### Entity-Relationship Diagram
 
 ```
 ┌─────────────────┐         ┌─────────────────┐         ┌─────────────────┐
@@ -82,9 +82,9 @@ O Sistema de Gerenciamento de Pedidos segue uma arquitetura de três camadas (3-
                             └─────────────────┘
 ```
 
-### Esquema de Tabelas
+### Table Schema
 
-#### Tabela: CLIENTE
+#### Table: CLIENTE
 ```sql
 CREATE TABLE cliente (
     id BIGSERIAL PRIMARY KEY,
@@ -94,7 +94,7 @@ CREATE TABLE cliente (
 );
 ```
 
-#### Tabela: PRODUTO
+#### Table: PRODUTO
 ```sql
 CREATE TABLE produto (
     id BIGSERIAL PRIMARY KEY,
@@ -104,7 +104,7 @@ CREATE TABLE produto (
 );
 ```
 
-#### Tabela: PEDIDO
+#### Table: PEDIDO
 ```sql
 CREATE TABLE pedido (
     id BIGSERIAL PRIMARY KEY,
@@ -118,7 +118,7 @@ CREATE TABLE pedido (
 );
 ```
 
-#### Tabela: ITEM_PEDIDO
+#### Table: ITEM_PEDIDO
 ```sql
 CREATE TABLE item_pedido (
     id BIGSERIAL PRIMARY KEY,
@@ -134,45 +134,45 @@ CREATE TABLE item_pedido (
 );
 ```
 
-## Fluxo de Dados
+## Data Flow
 
-### 1. Fluxo de Criação de Pedido
+### 1. Order Creation Flow
 
 ```
 Frontend                Backend                Database
     │                      │                      │
-    │ 1. Carregar clientes │                      │
+    │ 1. Load clients      │                      │
     ├─────────────────────►│                      │
-    │                      │ 2. SELECT clientes   │
+    │                      │ 2. SELECT clients    │
     │                      ├─────────────────────►│
     │                      │◄─────────────────────┤
-    │◄─────────────────────┤ 3. Retornar lista    │
+    │◄─────────────────────┤ 3. Return list       │
     │                      │                      │
-    │ 4. Carregar produtos │                      │
+    │ 4. Load products     │                      │
     ├─────────────────────►│                      │
-    │                      │ 5. SELECT produtos   │
+    │                      │ 5. SELECT products   │
     │                      ├─────────────────────►│
     │                      │◄─────────────────────┤
-    │◄─────────────────────┤ 6. Retornar lista    │
+    │◄─────────────────────┤ 6. Return list       │
     │                      │                      │
-    │ 7. Criar pedido      │                      │
+    │ 7. Create order      │                      │
     ├─────────────────────►│                      │
-    │                      │ 8. Validar crédito   │
+    │                      │ 8. Validate credit   │
     │                      ├─────────────────────►│
     │                      │◄─────────────────────┤
-    │                      │ 9. INSERT pedido     │
+    │                      │ 9. INSERT order      │
     │                      ├─────────────────────►│
-    │                      │ 10. INSERT itens     │
+    │                      │ 10. INSERT items     │
     │                      ├─────────────────────►│
     │                      │◄─────────────────────┤
-    │◄─────────────────────┤ 11. Confirmar        │
+    │◄─────────────────────┤ 11. Confirm          │
     │                      │                      │
 ```
 
-### 2. Validação de Crédito
+### 2. Credit Validation
 
 ```sql
--- Cálculo do crédito disponível com janela de 30 dias
+-- Available credit calculation with 30-day window
 SELECT 
     c.limite_credito,
     COALESCE(SUM(p.valor_total), 0) as valor_utilizado,
@@ -185,49 +185,49 @@ WHERE c.id = ?
 GROUP BY c.id, c.limite_credito;
 ```
 
-## API REST Endpoints
+## REST API Endpoints
 
-### Clientes
+### Clients
 ```
-GET    /api/clientes          - Listar todos os clientes
-GET    /api/clientes/{id}     - Obter cliente específico
-GET    /api/clientes/{id}/credito - Obter informações de crédito em tempo real
-POST   /api/clientes          - Criar novo cliente
-PUT    /api/clientes/{id}     - Atualizar cliente
-DELETE /api/clientes/{id}     - Excluir cliente
-```
-
-### Produtos
-```
-GET    /api/produtos          - Listar todos os produtos
-GET    /api/produtos/{id}     - Obter produto específico
-POST   /api/produtos          - Criar novo produto
-PUT    /api/produtos/{id}     - Atualizar produto
-DELETE /api/produtos/{id}     - Excluir produto
+GET    /api/clientes          - List all clients
+GET    /api/clientes/{id}     - Get specific client
+GET    /api/clientes/{id}/credito - Get real-time credit information
+POST   /api/clientes          - Create new client
+PUT    /api/clientes/{id}     - Update client
+DELETE /api/clientes/{id}     - Delete client
 ```
 
-### Pedidos
+### Products
 ```
-GET    /api/pedidos           - Listar todos os pedidos
-GET    /api/pedidos/{id}      - Obter pedido específico
-POST   /api/pedidos           - Criar novo pedido
-PUT    /api/pedidos/{id}      - Atualizar pedido
-DELETE /api/pedidos/{id}      - Cancelar pedido
-GET    /api/pedidos/cliente/{clienteId} - Pedidos por cliente
-```
-
-### Sistema
-```
-GET    /api/health            - Health check do sistema
-GET    /api/version           - Versão da aplicação
+GET    /api/produtos          - List all products
+GET    /api/produtos/{id}     - Get specific product
+POST   /api/produtos          - Create new product
+PUT    /api/produtos/{id}     - Update product
+DELETE /api/produtos/{id}     - Delete product
 ```
 
-## Padrões Arquiteturais
+### Orders
+```
+GET    /api/pedidos           - List all orders
+GET    /api/pedidos/{id}      - Get specific order
+POST   /api/pedidos           - Create new order
+PUT    /api/pedidos/{id}      - Update order
+DELETE /api/pedidos/{id}      - Cancel order
+GET    /api/pedidos/cliente/{clienteId} - Orders by client
+```
+
+### System
+```
+GET    /api/health            - System health check
+GET    /api/version           - Application version
+```
+
+## Architectural Patterns
 
 ### 1. Model-View-Controller (MVC)
-- **Model**: Entidades JPA (Cliente, Produto, Pedido)
-- **View**: Componentes React
-- **Controller**: Controllers Spring REST
+- **Model**: JPA Entities (Cliente, Produto, Pedido)
+- **View**: React Components
+- **Controller**: Spring REST Controllers
 
 ### 2. Repository Pattern
 ```java
@@ -247,7 +247,7 @@ public class PedidoService {
     private PedidoRepository pedidoRepository;
     
     public PedidoResponseDTO criarPedido(PedidoRequestDTO request) {
-        // Lógica de negócio
+        // Business logic
     }
 }
 ```
@@ -268,9 +268,9 @@ public class PedidoResponseDTO {
 }
 ```
 
-## Segurança
+## Security
 
-### 1. Configuração CORS
+### 1. CORS Configuration
 ```java
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
@@ -279,16 +279,16 @@ public class ClienteController {
 }
 ```
 
-### 2. Validação de Dados
+### 2. Data Validation
 ```java
 @Valid
 public ResponseEntity<PedidoResponseDTO> criarPedido(
     @RequestBody @Valid PedidoRequestDTO request) {
-    // processamento
+    // processing
 }
 ```
 
-### 3. Tratamento de Exceções
+### 3. Exception Handling
 ```java
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -296,14 +296,14 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(CreditoInsuficienteException.class)
     public ResponseEntity<ErrorResponse> handleCreditoInsuficiente(
             CreditoInsuficienteException ex) {
-        // tratamento
+        // handling
     }
 }
 ```
 
-## Performance e Escalabilidade
+## Performance and Scalability
 
-### 1. Pool de Conexões
+### 1. Connection Pool
 ```properties
 spring.datasource.hikari.maximum-pool-size=20
 spring.datasource.hikari.minimum-idle=5
@@ -311,7 +311,7 @@ spring.datasource.hikari.idle-timeout=300000
 spring.datasource.hikari.connection-timeout=20000
 ```
 
-### 2. Cache (Futuro)
+### 2. Cache (Future)
 ```java
 @Cacheable("produtos")
 public List<Produto> listarProdutos() {
@@ -319,16 +319,16 @@ public List<Produto> listarProdutos() {
 }
 ```
 
-### 3. Paginação
+### 3. Pagination
 ```java
 public Page<Pedido> listarPedidos(Pageable pageable) {
     return pedidoRepository.findAll(pageable);
 }
 ```
 
-## Estratégias de Teste
+## Testing Strategies
 
-### 1. Testes Unitários
+### 1. Unit Tests
 ```java
 @ExtendWith(MockitoExtension.class)
 class PedidoServiceTest {
@@ -341,12 +341,12 @@ class PedidoServiceTest {
     
     @Test
     void deveCriarPedidoComSucesso() {
-        // teste
+        // test
     }
 }
 ```
 
-### 2. Testes de Integração
+### 2. Integration Tests
 ```java
 @SpringBootTest
 @Transactional
@@ -354,26 +354,26 @@ class PedidoControllerIntegrationTest {
     
     @Test
     void deveRetornarListaDePedidos() {
-        // teste de integração
+        // integration test
     }
 }
 ```
 
-### 3. Testes de Frontend
+### 3. Frontend Tests
 ```javascript
 import { render, screen } from '@testing-library/react';
 import PedidoForm from './PedidoForm';
 
-test('renders pedido form', () => {
+test('renders order form', () => {
   render(<PedidoForm />);
-  const linkElement = screen.getByText(/criar pedido/i);
+  const linkElement = screen.getByText(/create order/i);
   expect(linkElement).toBeInTheDocument();
 });
 ```
 
-## Deployment e DevOps
+## Deployment and DevOps
 
-### 1. Containerização (Docker)
+### 1. Containerization (Docker)
 ```dockerfile
 FROM openjdk:17-jre-slim
 COPY target/orders-management-system-1.0.0.jar app.jar
@@ -407,9 +407,9 @@ services:
       - "3000:3000"
 ```
 
-## Monitoramento
+## Monitoring
 
-### 1. Métricas de Aplicação
+### 1. Application Metrics
 ```java
 @RestController
 public class HealthController {
@@ -424,38 +424,38 @@ public class HealthController {
 }
 ```
 
-### 2. Logs Estruturados
+### 2. Structured Logs
 ```java
 private static final Logger logger = LoggerFactory.getLogger(PedidoService.class);
 
 public PedidoResponseDTO criarPedido(PedidoRequestDTO request) {
-    logger.info("Criando pedido para cliente: {}", request.getClienteId());
-    // lógica
-    logger.info("Pedido criado com sucesso. ID: {}", pedido.getId());
+    logger.info("Creating order for client: {}", request.getClienteId());
+    // logic
+    logger.info("Order created successfully. ID: {}", pedido.getId());
 }
 ```
 
-## Versionamento da API
+## API Versioning
 
-### 1. Versionamento por Header
+### 1. Header-based Versioning
 ```java
 @GetMapping(value = "/api/pedidos", headers = "API-Version=1")
 public ResponseEntity<List<PedidoResponseDTO>> listarPedidosV1() {
-    // implementação v1
+    // v1 implementation
 }
 ```
 
-### 2. Versionamento por URL
+### 2. URL-based Versioning
 ```java
 @GetMapping("/api/v1/pedidos")
 public ResponseEntity<List<PedidoResponseDTO>> listarPedidosV1() {
-    // implementação v1
+    // v1 implementation
 }
 ```
 
-## Documentação da API
+## API Documentation
 
-### 1. OpenAPI/Swagger (Futuro)
+### 1. OpenAPI/Swagger (Future)
 ```java
 @Configuration
 @EnableOpenApi
@@ -465,7 +465,7 @@ public class OpenApiConfig {
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
             .info(new Info()
-                .title("Sistema de Gerenciamento de Pedidos API")
+                .title("Orders Management System API")
                 .version("1.0.0"));
     }
 }
@@ -473,6 +473,6 @@ public class OpenApiConfig {
 
 ---
 
-**Última atualização**: 09 de Agosto de 2025  
-**Versão**: 1.0.0  
-**Autor**: Gabriel Mendonça
+**Last updated**: August 9, 2025  
+**Version**: 1.0.0  
+**Author**: Gabriel Mendonça

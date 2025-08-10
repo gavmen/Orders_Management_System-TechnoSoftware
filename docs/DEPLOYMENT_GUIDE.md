@@ -1,10 +1,10 @@
-# Sistema de Gerenciamento de Pedidos - Guia de Implantação
+# Orders Management System - Deployment Guide
 
-## Visão Geral do Projeto
+## Project Overview
 
-**Sistema de Gerenciamento de Pedidos** é uma aplicação web completa desenvolvida para empresas de logística que necessitam gerenciar pedidos com validação de limite de crédito dos clientes.
+**Orders Management System** is a complete web application developed for logistics companies that need to manage orders with client credit limit validation.
 
-### Arquitetura do Sistema
+### System Architecture
 
 ```
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
@@ -15,45 +15,45 @@
 └─────────────────┘    └─────────────────┘    └─────────────────┘
 ```
 
-### Funcionalidades Principais
+### Main Features
 
-- **Gestão de Clientes**: Cadastro com limites de crédito individualizados
-- **Catálogo de Produtos**: Sistema completo de produtos com preços
-- **Criação de Pedidos**: Interface intuitiva para criação de pedidos
-- **Validação de Crédito**: Verificação automática de limite de crédito
-- **Controle de Estoque**: Gestão de quantidades por produto
-- **Histórico de Pedidos**: Visualização completa dos pedidos realizados
-- **API RESTful**: Endpoints completos para integração
+- **Client Management**: Registration with individualized credit limits
+- **Product Catalog**: Complete product system with prices
+- **Order Creation**: Intuitive interface for order creation
+- **Credit Validation**: Automatic credit limit verification
+- **Stock Control**: Quantity management per product
+- **Order History**: Complete view of placed orders
+- **RESTful API**: Complete endpoints for integration
 
 ---
 
-## Requisitos do Sistema
+## System Requirements
 
-### Requisitos de Hardware (Mínimos)
+### Hardware Requirements (Minimum)
 - **CPU**: 2 cores
 - **RAM**: 4GB
-- **Armazenamento**: 20GB de espaço livre
-- **Rede**: Conexão com internet para download de dependências
+- **Storage**: 20GB free space
+- **Network**: Internet connection for dependency downloads
 
-### Requisitos de Hardware (Recomendados)
+### Hardware Requirements (Recommended)
 - **CPU**: 4+ cores
 - **RAM**: 8GB+
-- **Armazenamento**: 50GB+ SSD
-- **Rede**: Conexão de banda larga
+- **Storage**: 50GB+ SSD
+- **Network**: Broadband connection
 
-### Requisitos de Software
+### Software Requirements
 
-#### Sistema Operacional
-- **Ubuntu**: 20.04 LTS ou superior
-- **CentOS**: 7+ ou Rocky Linux 8+
+#### Operating System
+- **Ubuntu**: 20.04 LTS or higher
+- **CentOS**: 7+ or Rocky Linux 8+
 - **Debian**: 10+
-- **Windows**: 10+ (com WSL2 recomendado)
+- **Windows**: 10+ (WSL2 recommended)
 - **macOS**: 10.15+
 
-#### Dependências Essenciais
+#### Essential Dependencies
 ```bash
 # Java Development Kit
-OpenJDK 17 ou Oracle JDK 17
+OpenJDK 17 or Oracle JDK 17
 
 # Apache Maven
 Maven 3.8.0+
@@ -71,19 +71,19 @@ Git 2.25+
 
 ---
 
-## Instalação e Configuração
+## Installation and Configuration
 
-### 1. Preparação do Ambiente
+### 1. Environment Preparation
 
 #### Ubuntu/Debian
 ```bash
-# Atualização do sistema
+# System update
 sudo apt update && sudo apt upgrade -y
 
-# Instalação das dependências
+# Dependencies installation
 sudo apt install -y openjdk-17-jdk maven nodejs npm postgresql postgresql-contrib git curl
 
-# Verificação das versões
+# Version verification
 java -version
 mvn -version
 node -version
@@ -93,17 +93,17 @@ psql --version
 
 #### CentOS/RHEL/Rocky Linux
 ```bash
-# Atualização do sistema
+# System update
 sudo dnf update -y
 
-# Instalação das dependências
+# Dependencies installation
 sudo dnf install -y java-17-openjdk java-17-openjdk-devel maven nodejs npm postgresql postgresql-server postgresql-contrib git curl
 
-# Inicialização do PostgreSQL
+# PostgreSQL initialization
 sudo postgresql-setup --initdb
 sudo systemctl enable --now postgresql
 
-# Verificação das versões
+# Version verification
 java -version
 mvn -version
 node -version
@@ -111,65 +111,65 @@ npm -version
 psql --version
 ```
 
-### 2. Configuração do Banco de Dados
+### 2. Database Configuration
 
 ```bash
-# Acesso ao PostgreSQL como usuário postgres
+# Access PostgreSQL as postgres user
 sudo -u postgres psql
 
-# Dentro do PostgreSQL, execute:
+# Inside PostgreSQL, execute:
 CREATE DATABASE logistica_pedidos;
 CREATE USER logistica_user WITH PASSWORD 'logistica2025';
 GRANT ALL PRIVILEGES ON DATABASE logistica_pedidos TO logistica_user;
 ALTER USER logistica_user CREATEDB;
 \q
 
-# Teste da conexão
+# Connection test
 PGPASSWORD='logistica2025' psql -h localhost -U logistica_user -d logistica_pedidos -c "SELECT current_database();"
 ```
 
-### 3. Clone e Configuração do Projeto
+### 3. Project Clone and Configuration
 
 ```bash
-# Clone do repositório
+# Repository clone
 git clone https://github.com/gavmen/TechnoSoftware-Assetment
 cd technoSoftware
 
-# Configuração das variáveis de ambiente
+# Environment variables configuration
 echo "DB_PASSWORD=logistica2025" > .env
 
-# Verificação da estrutura
+# Structure verification
 ls -la
 ```
 
-### 4. Instalação das Dependências
+### 4. Dependencies Installation
 
 #### Backend (Spring Boot)
 ```bash
-# Na raiz do projeto
+# In project root
 mvn clean install -DskipTests
 
-# Teste de compilação
+# Compilation test
 mvn clean compile
 ```
 
 #### Frontend (React)
 ```bash
-# Navegue para o diretório frontend
+# Navigate to frontend directory
 cd frontend
 
-# Instalação das dependências
+# Dependencies installation
 npm install
 
-# Verificação da instalação
+# Installation verification
 npm list --depth=0
 ```
 
 ---
 
-## Execução da Aplicação
+## Application Execution
 
-### Opção 1: Execução Manual (Desenvolvimento)
+### Option 1: Manual Execution (Development)
 
 #### Terminal 1 - Backend
 ```bash
@@ -177,7 +177,7 @@ cd /path/to/technoSoftware
 export DB_PASSWORD='logistica2025'
 mvn spring-boot:run
 
-# O backend estará disponível em: http://localhost:8080
+# Backend will be available at: http://localhost:8080
 # Health check: http://localhost:8080/api/health
 ```
 
@@ -186,22 +186,22 @@ mvn spring-boot:run
 cd /path/to/technoSoftware/frontend
 npm start
 
-# O frontend estará disponível em: http://localhost:3000
-# Aceite executar em uma porta alternativa se necessário
+# Frontend will be available at: http://localhost:3000
+# Accept running on alternative port if necessary
 ```
 
-### Opção 2: Execução em Background
+### Option 2: Background Execution
 ```bash
-# Backend em background
+# Backend in background
 export DB_PASSWORD='logistica2025'
 nohup mvn spring-boot:run > backend.log 2>&1 &
 
-# Frontend em background
+# Frontend in background
 cd frontend
 nohup npm start > frontend.log 2>&1 &
 ```
 
-### Opção 3: Usando Screen (Recomendado para Servidores)
+### Option 3: Using Screen (Recommended for Servers)
 ```bash
 # Backend
 screen -dmS backend bash -c "export DB_PASSWORD='logistica2025' && mvn spring-boot:run"
@@ -209,34 +209,34 @@ screen -dmS backend bash -c "export DB_PASSWORD='logistica2025' && mvn spring-bo
 # Frontend  
 screen -dmS frontend bash -c "cd frontend && npm start"
 
-# Para acessar as sessões:
-screen -r backend  # Ctrl+A+D para sair
-screen -r frontend # Ctrl+A+D para sair
+# To access sessions:
+screen -r backend  # Ctrl+A+D to exit
+screen -r frontend # Ctrl+A+D to exit
 
-# Listar sessões ativas
+# List active sessions
 screen -ls
 ```
 
 ---
 
-## Teste da Aplicação
+## Application Testing
 
-### 1. Verificação dos Serviços
+### 1. Services Verification
 
 ```bash
-# Verificar se os serviços estão rodando
+# Check if services are running
 curl http://localhost:8080/api/health
-curl -s http://localhost:3000 > /dev/null && echo "Frontend OK" || echo "Frontend Erro"
+curl -s http://localhost:3000 > /dev/null && echo "Frontend OK" || echo "Frontend Error"
 
-# Verificar portas
+# Check ports
 sudo lsof -i :8080 -i :3000
 ```
 
-### 2. População do Banco com Dados de Teste
+### 2. Database Population with Test Data
 
 ```bash
 PGPASSWORD='logistica2025' psql -h localhost -U logistica_user -d logistica_pedidos << EOF
--- Inserção de clientes de teste
+-- Test clients insertion
 INSERT INTO cliente (nome, limite_credito) VALUES 
 ('João Silva Santos', 15000.00),
 ('Maria Santos Oliveira', 1000.00),
@@ -244,7 +244,7 @@ INSERT INTO cliente (nome, limite_credito) VALUES
 ('Ana Paula Ferreira', 5000.00),
 ('Carlos Eduardo Lima', 8000.00);
 
--- Inserção de produtos de teste
+-- Test products insertion
 INSERT INTO produto (nome, preco) VALUES 
 ('Notebook Dell Inspiron 15', 2800.00),
 ('Mouse Logitech MX Master', 450.00),
@@ -255,36 +255,36 @@ INSERT INTO produto (nome, preco) VALUES
 ('SSD Kingston 500GB', 280.00),
 ('Smartphone Samsung Galaxy', 1800.00);
 
--- Verificação dos dados inseridos
-SELECT 'CLIENTES CADASTRADOS:' as info;
+-- Verification of inserted data
+SELECT 'REGISTERED CLIENTS:' as info;
 SELECT id, nome, limite_credito FROM cliente ORDER BY id;
-SELECT 'PRODUTOS CADASTRADOS:' as info;  
+SELECT 'REGISTERED PRODUCTS:' as info;  
 SELECT id, nome, preco FROM produto ORDER BY id;
 EOF
 ```
 
-### 3. Teste das Funcionalidades
+### 3. Functionality Testing
 
-1. **Acesse o Frontend**: http://localhost:3000
-2. **Selecione um Cliente**: Escolha um cliente da lista
-3. **Visualize o Crédito**: Veja limite, valor utilizado e saldo disponível
-4. **Adicione Produtos**: Selecione produtos e quantidades
-5. **Teste Validação**: Tente criar pedidos que excedam o limite
-6. **Finalize Pedidos**: Complete pedidos dentro do limite
+1. **Access Frontend**: http://localhost:3000
+2. **Select a Client**: Choose a client from the list
+3. **View Credit**: See limit, used amount, and available balance
+4. **Add Products**: Select products and quantities
+5. **Test Validation**: Try to create orders that exceed the limit
+6. **Complete Orders**: Complete orders within the limit
 
-### 4. Teste da API (Opcional)
+### 4. API Testing (Optional)
 
 ```bash
-# Listar clientes
+# List clients
 curl http://localhost:8080/api/clientes
 
-# Obter informações de crédito em tempo real
+# Get real-time credit information
 curl http://localhost:8080/api/clientes/1/credito
 
-# Listar produtos  
+# List products  
 curl http://localhost:8080/api/produtos
 
-# Criar pedido (exemplo)
+# Create order (example)
 curl -X POST http://localhost:8080/api/pedidos \
   -H "Content-Type: application/json" \
   -d '{
@@ -297,31 +297,31 @@ curl -X POST http://localhost:8080/api/pedidos \
 
 ---
 
-## Segurança e Configuração
+## Security and Configuration
 
-### Variáveis de Ambiente
+### Environment Variables
 
 ```bash
-# Variáveis essenciais
+# Essential variables
 DB_PASSWORD=logistica2025
 SPRING_PROFILES_ACTIVE=production
 SERVER_PORT=8080
 
-# Variáveis opcionais
+# Optional variables
 DB_HOST=localhost
 DB_PORT=5432
 DB_NAME=logistica_pedidos
 DB_USER=logistica_user
 ```
 
-### Configuração de Produção
+### Production Configuration
 
-#### 1. Configuração do PostgreSQL para Produção
+#### 1. PostgreSQL Production Configuration
 ```bash
-# Edite o arquivo de configuração
+# Edit configuration file
 sudo nano /etc/postgresql/14/main/postgresql.conf
 
-# Configurações recomendadas:
+# Recommended settings:
 shared_buffers = 256MB
 effective_cache_size = 1GB
 maintenance_work_mem = 64MB
@@ -330,7 +330,7 @@ wal_buffers = 16MB
 default_statistics_target = 100
 ```
 
-#### 2. Configuração de Firewall
+#### 2. Firewall Configuration
 ```bash
 # Ubuntu/Debian
 sudo ufw allow 8080/tcp
@@ -343,18 +343,18 @@ sudo firewall-cmd --permanent --add-port=3000/tcp
 sudo firewall-cmd --reload
 ```
 
-#### 3. Configuração de Proxy Reverso (Nginx)
+#### 3. Reverse Proxy Configuration (Nginx)
 ```bash
-# Instalação do Nginx
+# Nginx installation
 sudo apt install nginx
 
-# Configuração
-sudo nano /etc/nginx/sites-available/pedidos-app
+# Configuration
+sudo nano /etc/nginx/sites-available/orders-app
 
-# Conteúdo da configuração:
+# Configuration content:
 server {
     listen 80;
-    server_name seu-dominio.com;
+    server_name your-domain.com;
 
     location / {
         proxy_pass http://localhost:3000;
@@ -378,64 +378,64 @@ server {
     }
 }
 
-# Ativação da configuração
-sudo ln -s /etc/nginx/sites-available/pedidos-app /etc/nginx/sites-enabled/
+# Configuration activation
+sudo ln -s /etc/nginx/sites-available/orders-app /etc/nginx/sites-enabled/
 sudo nginx -t
 sudo systemctl restart nginx
 ```
 
 ---
 
-## Solução de Problemas
+## Troubleshooting
 
-### Backend não inicia
+### Backend won't start
 
 ```bash
-# Verificar se o PostgreSQL está rodando
+# Check if PostgreSQL is running
 sudo systemctl status postgresql
 
-# Verificar conexão com o banco
+# Check database connection
 PGPASSWORD='logistica2025' psql -h localhost -U logistica_user -d logistica_pedidos
 
-# Verificar porta 8080
+# Check port 8080
 sudo lsof -i :8080
 
-# Verificar logs
+# Check logs
 tail -f application.log
 ```
 
-### Frontend não inicia
+### Frontend won't start
 
 ```bash
-# Verificar versão do Node.js
+# Check Node.js version
 node -version
 
-# Limpar cache do npm
+# Clear npm cache
 npm cache clean --force
 
-# Reinstalar dependências
+# Reinstall dependencies
 rm -rf node_modules package-lock.json
 npm install
 
-# Verificar porta 3000
+# Check port 3000
 sudo lsof -i :3000
 ```
 
-### Erro de Conexão CORS
+### CORS Connection Error
 
-- Verifique se o backend está rodando
-- Confirme se as anotações @CrossOrigin estão presentes nos controllers
+- Check if backend is running
+- Confirm @CrossOrigin annotations are present in controllers
 
-### Erro de Conexão com o Banco
+### Database Connection Error
 
 ```bash
-# Verificar se o usuário e senha estão corretos
+# Check if user and password are correct
 PGPASSWORD='logistica2025' psql -h localhost -U logistica_user -d logistica_pedidos
 
-# Verificar se o banco existe
+# Check if database exists
 sudo -u postgres psql -c "\l" | grep logistica
 
-# Recriar usuário se necessário
+# Recreate user if necessary
 sudo -u postgres psql -c "DROP USER IF EXISTS logistica_user;"
 sudo -u postgres psql -c "CREATE USER logistica_user WITH PASSWORD 'logistica2025';"
 sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE logistica_pedidos TO logistica_user;"
@@ -443,121 +443,121 @@ sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE logistica_pedidos TO 
 
 ---
 
-## Monitoramento e Logs
+## Monitoring and Logs
 
-### Localização dos Logs
+### Log Locations
 
 ```bash
-# Logs do Backend
+# Backend logs
 tail -f application.log
 tail -f server.log
 
-# Logs do Frontend (se usando nohup)
+# Frontend logs (if using nohup)
 tail -f frontend.log
 
-# Logs do PostgreSQL
+# PostgreSQL logs
 sudo tail -f /var/log/postgresql/postgresql-14-main.log
 ```
 
-### Monitoramento de Recursos
+### Resource Monitoring
 
 ```bash
-# Uso de CPU e Memória
+# CPU and Memory usage
 htop
 top
 
-# Uso de disco
+# Disk usage
 df -h
 du -sh /path/to/technoSoftware
 
-# Conexões de rede
+# Network connections
 netstat -tulpn | grep -E '(8080|3000|5432)'
 ```
 
 ---
 
-## Backup e Manutenção
+## Backup and Maintenance
 
-### Backup do Banco de Dados
+### Database Backup
 
 ```bash
-# Backup diário
+# Daily backup
 PGPASSWORD='logistica2025' pg_dump -h localhost -U logistica_user logistica_pedidos > backup_$(date +%Y%m%d).sql
 
-# Backup automatizado via crontab
+# Automated backup via crontab
 crontab -e
-# Adicione a linha:
+# Add line:
 0 2 * * * PGPASSWORD='logistica2025' pg_dump -h localhost -U logistica_user logistica_pedidos > /backup/logistica_$(date +\%Y\%m\%d).sql
 ```
 
-### Restauração do Banco
+### Database Restoration
 
 ```bash
-# Restaurar backup
+# Restore backup
 PGPASSWORD='logistica2025' psql -h localhost -U logistica_user logistica_pedidos < backup_20250809.sql
 ```
 
-### Atualizações do Sistema
+### System Updates
 
 ```bash
-# Parar os serviços
+# Stop services
 screen -S backend -X quit
 screen -S frontend -X quit
 
-# Atualizar código
+# Update code
 git pull origin main
 
-# Atualizar dependências
+# Update dependencies
 mvn clean install -DskipTests
 cd frontend && npm update
 
-# Reiniciar serviços
+# Restart services
 screen -dmS backend bash -c "export DB_PASSWORD='logistica2025' && mvn spring-boot:run"
 screen -dmS frontend bash -c "cd frontend && npm start"
 ```
 
 ---
 
-## Suporte Técnico
+## Technical Support
 
-### Informações de Contato
+### Contact Information
 
-- **Desenvolvedor**: Gabriel Mendonça
+- **Developer**: Gabriel Mendonça
 - **Email**: dev.gabrielmendonca@gmail.com
-- **Repositório**: https://github.com/gavmen/TechnoSoftware-Assetment
-- **Documentação**: https://github.com/gavmen/TechnoSoftware-Assetment/wiki
+- **Repository**: https://github.com/gavmen/TechnoSoftware-Assetment
+- **Documentation**: https://github.com/gavmen/TechnoSoftware-Assetment/wiki
 
-### Relatório de Bugs
+### Bug Reports
 
-Para relatar bugs, por favor inclua:
+To report bugs, please include:
 
-1. **Versão do Sistema**: Frontend e Backend
-2. **Sistema Operacional**: Versão e distribuição
-3. **Navegador**: Se aplicável
-4. **Passos para Reproduzir**: Sequência detalhada
-5. **Comportamento Esperado**: O que deveria acontecer
-6. **Comportamento Atual**: O que está acontecendo
-7. **Logs**: Logs relevantes do backend/frontend
-8. **Screenshots**: Se aplicável
+1. **System Version**: Frontend and Backend
+2. **Operating System**: Version and distribution
+3. **Browser**: If applicable
+4. **Steps to Reproduce**: Detailed sequence
+5. **Expected Behavior**: What should happen
+6. **Current Behavior**: What is happening
+7. **Logs**: Relevant backend/frontend logs
+8. **Screenshots**: If applicable
 
 ---
 
-## Licença e Créditos
+## License and Credits
 
-**Sistema de Gerenciamento de Pedidos**
-- **Versão**: 1.0.0  
-- **Data**: Agosto 2025
-- **Desenvolvedor**: Gabriel Mendonça
-- **Tecnologias**: Spring Boot 3.2, React 19, Material-UI 7.3, PostgreSQL 14
+**Orders Management System**
+- **Version**: 1.0.0  
+- **Date**: August 2025
+- **Developer**: Gabriel Mendonça
+- **Technologies**: Spring Boot 3.2, React 19, Material-UI 7.3, PostgreSQL 14
 
-### Tecnologias Utilizadas
+### Technologies Used
 
 - **Backend**: Spring Boot, Spring Data JPA, PostgreSQL
 - **Frontend**: React 19, Material-UI 7.3.1, Axios
-- **Ferramentas**: Maven, npm, Git
-- **Infraestrutura**: Ubuntu/Linux, Nginx (opcional)
+- **Tools**: Maven, npm, Git
+- **Infrastructure**: Ubuntu/Linux, Nginx (optional)
 
 ---
 
-**Última atualização**: 09 de Agosto de 2025  
-**Versão do documento**: 1.0.0
+**Last updated**: August 9, 2025  
+**Document version**: 1.0.0

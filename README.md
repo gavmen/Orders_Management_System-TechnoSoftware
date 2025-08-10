@@ -1,169 +1,158 @@
-# Sistema de Gerenciamento de Pedidos
+# Orders Management System
 
-Sistema completo para gerenciamento de pedidos com validação automática de limite de crédito, desenvolvido com Spring Boot 3.2 e React 19.
+Complete orders management system with automatic credit limit validation, built with Spring Boot 3.2 and React 19.
 
 ![Status](https://img.shields.io/badge/Status-Production_Ready-green)
 ![Backend](https://img.shields.io/badge/Backend-Spring_Boot_3.2-brightgreen)
 ![Frontend](https://img.shields.io/badge/Frontend-React_19-blue)
 ![Database](https://img.shields.io/badge/Database-PostgreSQL_14-blue)
 
-## Visão Geral
+## Overview
 
-Este sistema processa pedidos de clientes com validação automática de limite de crédito baseada no histórico dos últimos 30 dias. A arquitetura segue padrões modernos com API REST no backend e interface responsiva no frontend.
+This system processes customer orders with automatic credit limit validation based on the last 30 days history. The architecture follows modern patterns with REST API on the backend and responsive interface on the frontend.
 
-### Funcionalidades Principais
+### Main Features
 
-- **Validação de Crédito**: Aprovação/rejeição automática baseada em limites de crédito
-- **Interface Responsiva**: Frontend moderno com Material-UI
-- **API RESTful**: Backend robusto com documentação OpenAPI
-- **Auditoria Completa**: Registro de todos os pedidos para análise
-- **Monitoramento**: Health checks e logs estruturados
-- **Tempo Real**: Consulta de saldo de crédito atualizada dinamicamente
+- **Credit Validation**: Automatic approval/rejection based on credit limits
+- **Responsive Interface**: Modern frontend with Material-UI
+- **RESTful API**: Robust backend with OpenAPI documentation
+- **Complete Audit**: Recording of all orders for analysis
+- **Monitoring**: Health checks and structured logs
+- **Real Time**: Dynamically updated credit balance queries
 
-## Stack Tecnológico
+## Technology Stack
 
 ### Backend
-- **Java 17** com Spring Boot 3.2.0
-- **Spring Data JPA** para persistência de dados
-- **PostgreSQL 14** como banco de dados
-- **Flyway** para migração de schema
-- **Maven** para gerenciamento de dependências
+- **Java 17** with Spring Boot 3.2.0
+- **Spring Data JPA** for data persistence
+- **PostgreSQL 14** as database
+- **Flyway** for schema migration
+- **Maven** for dependency management
 
 ### Frontend
-- **React 19.1.1** com hooks modernos
-- **Material-UI 7.3.1** para componentes UI
-- **Axios 1.11.0** para comunicação HTTP
-- **NPM** para gerenciamento de pacotes
+- **React 19.1.1** with modern hooks
+- **Material-UI 7.3.1** for UI components
+- **Axios 1.11.0** for HTTP communication
+- **NPM** for package management
 
-## Pré-requisitos
+## Prerequisites
 
 - **Java 17+** - [Download OpenJDK](https://adoptium.net/)
 - **Maven 3.8+** - [Download Maven](https://maven.apache.org/download.cgi)
 - **Node.js 18+** - [Download Node.js](https://nodejs.org/)
 - **PostgreSQL 14+** - [Download PostgreSQL](https://www.postgresql.org/download/)
 
-### Verificar Instalações
+### Verify Installations
 
 ```bash
-java -version    # Deve mostrar: openjdk version "17.x.x"
-mvn -version     # Deve mostrar: Apache Maven 3.8.x
-node --version   # Deve mostrar: v18.x.x ou superior
-psql --version   # Deve mostrar: psql (PostgreSQL) 14.x
-```
-node --version
-# Deve mostrar: v18.x.x ou superior
-
-# Verificar NPM
-npm --version
-# Deve mostrar: 9.x.x ou superior
-
-# Verificar PostgreSQL
-psql --version
-# Deve mostrar: psql (PostgreSQL) 14.x
+java -version    # Should show: openjdk version "17.x.x"
+mvn -version     # Should show: Apache Maven 3.8.x
+node --version   # Should show: v18.x.x or higher
+psql --version   # Should show: psql (PostgreSQL) 14.x
 ```
 
-## Instalação e Configuração
+## Installation and Setup
 
-### 1. Clonar o Repositório
+### 1. Clone Repository
 ```bash
 git clone <repository-url>
 cd technoSoftware
 ```
 
-### 2. Configurar o Banco de Dados
+### 2. Configure Database
 
-#### 2.1 Instalar PostgreSQL
+#### 2.1 Install PostgreSQL
 ```bash
 # Ubuntu/Debian
 sudo apt update
 sudo apt install postgresql postgresql-contrib
 
-# Verificar se o serviço está rodando
+# Verify service is running
 sudo systemctl status postgresql
 ```
 
-#### 2.2 Criar Banco e Usuário
+#### 2.2 Create Database and User
 ```bash
-# Conectar como usuário postgres
+# Connect as postgres user
 sudo -u postgres psql
 
-# Criar banco de dados
+# Create database
 CREATE DATABASE logistica_pedidos;
 
-# Criar usuário
+# Create user
 CREATE USER logistica_user WITH PASSWORD 'logistica2025';
 
-# Conceder permissões
+# Grant permissions
 GRANT ALL PRIVILEGES ON DATABASE logistica_pedidos TO logistica_user;
 
-# Sair do psql
+# Exit psql
 \q
 ```
 
-#### 2.3 Testar Conexão
+#### 2.3 Test Connection
 ```bash
 PGPASSWORD='logistica2025' psql -h localhost -U logistica_user -d logistica_pedidos -c "SELECT current_database();"
 ```
 
-### 3. Configurar Variáveis de Ambiente
+### 3. Configure Environment Variables
 
 #### 3.1 Backend
 ```bash
-# Criar arquivo .env na raiz do projeto
+# Create .env file in project root
 echo "DB_PASSWORD=logistica2025" > .env
 echo "DB_USERNAME=logistica_user" >> .env
 ```
 
 #### 3.2 Frontend
 ```bash
-# Navegar para o diretório frontend
+# Navigate to frontend directory
 cd frontend
 
-# Criar arquivo .env
+# Create .env file
 echo "REACT_APP_API_URL=http://localhost:8080/api" > .env
 echo "REACT_APP_ENV=development" >> .env
 ```
 
-##  Como Executar
+## How to Run
 
-### Opção 1: Execução Manual (Recomendado para Desenvolvimento)
+### Option 1: Manual Execution (Recommended for Development)
 
-#### 1. Iniciar o Backend
+#### 1. Start Backend
 ```bash
-# Na raiz do projeto (technoSoftware/)
+# In project root (technoSoftware/)
 export DB_PASSWORD='logistica2025'
 mvn spring-boot:run
 
-# O backend estará disponível em: http://localhost:8080
+# Backend will be available at: http://localhost:8080
 # Health check: http://localhost:8080/api/health
 ```
 
-#### 2. Iniciar o Frontend (em outro terminal)
+#### 2. Start Frontend (in another terminal)
 ```bash
-# Navegar para o diretório frontend
+# Navigate to frontend directory
 cd frontend
 
-# Instalar dependências (primeira vez)
+# Install dependencies (first time)
 npm install
 
-# Iniciar o desenvolvimento
+# Start development
 npm start
 
-# O frontend estará disponível em: http://localhost:3000
+# Frontend will be available at: http://localhost:3000
 ```
 
-### Opção 2: Execução em Background
+### Option 2: Background Execution
 ```bash
-# Backend em background
+# Backend in background
 export DB_PASSWORD='logistica2025'
 nohup mvn spring-boot:run > backend.log 2>&1 &
 
-# Frontend em background
+# Frontend in background
 cd frontend
 nohup npm start > frontend.log 2>&1 &
 ```
 
-### Opção 3: Usando Screen (Recomendado para Servidores)
+### Option 3: Using Screen (Recommended for Servers)
 ```bash
 # Backend
 screen -dmS backend bash -c "export DB_PASSWORD='logistica2025' && mvn spring-boot:run"
@@ -171,165 +160,165 @@ screen -dmS backend bash -c "export DB_PASSWORD='logistica2025' && mvn spring-bo
 # Frontend  
 screen -dmS frontend bash -c "cd frontend && npm start"
 
-# Verificar sessões
+# Check sessions
 screen -ls
 
-# Conectar a uma sessão
-screen -r backend  # ou screen -r frontend
+# Connect to a session
+screen -r backend  # or screen -r frontend
 ```
 
-##  Verificar se tudo está funcionando
+## Verify Everything is Working
 
-### 1. Verificar Backend
+### 1. Check Backend
 ```bash
 curl http://localhost:8080/api/health
-# Resposta esperada: "Orders Management System is running successfully!"
+# Expected response: "Orders Management System is running successfully!"
 ```
 
-### 2. Verificar Frontend
+### 2. Check Frontend
 ```bash
 curl -s http://localhost:3000 > /dev/null && echo "Frontend OK" || echo "Frontend Error"
-# Resposta esperada: "Frontend OK"
+# Expected response: "Frontend OK"
 ```
 
-### 3. Testar API de Clientes
+### 3. Test Clients API
 ```bash
 curl http://localhost:8080/api/clientes
-# Deve retornar lista de clientes em JSON
+# Should return client list in JSON
 ```
 
-### 4. Abrir no Navegador
+### 4. Open in Browser
 - **Frontend**: [http://localhost:3000](http://localhost:3000)
 - **API Health**: [http://localhost:8080/api/health](http://localhost:8080/api/health)
 
-##  Interface do Usuário
+## User Interface
 
-Acesse o sistema em [http://localhost:3000](http://localhost:3000) e você verá:
+Access the system at [http://localhost:3000](http://localhost:3000) and you will see:
 
-1. **Formulário de Criação de Pedidos**
-   - Seleção de cliente (com limite de crédito visível)
-   - Adição de produtos com quantidade
-   - Visualização de itens adicionados
-   - Cálculo automático do valor total
+1. **Order Creation Form**
+   - Client selection (with visible credit limit)
+   - Product addition with quantity
+   - View of added items
+   - Automatic total value calculation
 
-2. **Recursos da Interface**
-   -  Notificações em tempo real (Snackbar)
-   -  Indicadores de loading para todas as operações
-   -  Status de conectividade com o servidor
-   -  Botão de recarregar dados
-   -  Design responsivo para mobile
+2. **Interface Features**
+   - Real-time notifications (Snackbar)
+   - Loading indicators for all operations
+   - Server connectivity status
+   - Data reload button
+   - Responsive design for mobile
 
-##  Solução de Problemas
+## Troubleshooting
 
-### Problemas Comuns
+### Common Issues
 
-#### Backend não inicia
+#### Backend won't start
 ```bash
-# Verificar se o PostgreSQL está rodando
+# Check if PostgreSQL is running
 sudo systemctl status postgresql
 
-# Verificar conexão com o banco
+# Check database connection
 PGPASSWORD='logistica2025' psql -h localhost -U logistica_user -d logistica_pedidos
 
-# Verificar porta 8080
+# Check port 8080
 sudo lsof -i :8080
 ```
 
-#### Frontend não inicia
+#### Frontend won't start
 ```bash
-# Limpar cache do npm
+# Clear npm cache
 npm cache clean --force
 
-# Reinstalar dependências
+# Reinstall dependencies
 rm -rf node_modules package-lock.json
 npm install
 
-# Verificar porta 3000
+# Check port 3000
 sudo lsof -i :3000
 ```
 
-#### Erro de CORS
-- Verifique se o backend está rodando na porta 8080
-- Confirme se as anotações @CrossOrigin estão presentes nos controllers
+#### CORS Error
+- Verify backend is running on port 8080
+- Confirm @CrossOrigin annotations are present in controllers
 
-#### Erro de Conexão com o Banco
+#### Database Connection Error
 ```bash
-# Verificar se o usuário e senha estão corretos
+# Check if user and password are correct
 PGPASSWORD='logistica2025' psql -h localhost -U logistica_user -d logistica_pedidos
 
-# Verificar se o banco existe
+# Check if database exists
 sudo -u postgres psql -c "\l" | grep logistica
 ```
 
-##  Dados de Teste
+## Test Data
 
-O sistema já vem com dados de teste pré-carregados:
+The system comes with pre-loaded test data:
 
-### Clientes
-- João Silva Santos (Limite: R$ 15.000,00)
-- Maria Oliveira Costa (Limite: R$ 25.000,00)
-- Carlos Eduardo Lima (Limite: R$ 10.000,00)
-- Ana Paula Ferreira (Limite: R$ 30.000,00)
+### Clients
+- João Silva Santos (Limit: R$ 15,000.00)
+- Maria Oliveira Costa (Limit: R$ 25,000.00)
+- Carlos Eduardo Lima (Limit: R$ 10,000.00)
+- Ana Paula Ferreira (Limit: R$ 30,000.00)
 
-### Produtos
-- Notebook Dell Inspiron 15 (R$ 2.800,00)
-- Mouse Logitech MX Master 3 (R$ 450,00)
-- Teclado Mecânico Corsair K95 (R$ 750,00)
-- Monitor Samsung 27" 4K (R$ 1.200,00)
-- Impressora HP LaserJet Pro (R$ 680,00)
+### Products
+- Notebook Dell Inspiron 15 (R$ 2,800.00)
+- Mouse Logitech MX Master 3 (R$ 450.00)
+- Teclado Mecânico Corsair K95 (R$ 750.00)
+- Monitor Samsung 27" 4K (R$ 1,200.00)
+- Impressora HP LaserJet Pro (R$ 680.00)
 
-### Exemplo de Uso
-1. Selecione "Ana Paula Ferreira" (limite R$ 30.000)
-2. Adicione "Notebook Dell" + "Mouse Logitech" = R$ 3.250
-3. Submeta o pedido → **APROVADO** 
+### Usage Example
+1. Select "Ana Paula Ferreira" (limit R$ 30,000)
+2. Add "Notebook Dell" + "Mouse Logitech" = R$ 3,250
+3. Submit order → **APPROVED** 
 
-ou
+or
 
-1. Selecione "Maria Santos" (limite R$ 1.000) 
-2. Adicione "Notebook Dell" = R$ 2.800
-3. Submeta o pedido → **REJEITADO** 
+1. Select "Maria Santos" (limit R$ 1,000) 
+2. Add "Notebook Dell" = R$ 2,800
+3. Submit order → **REJECTED** 
 
-## Documentação
+## Documentation
 
-### Guias Principais
-- [Quick Start Guide](QUICK_START.md) - Setup rápido em 5 minutos
-- [API Documentation](docs/API_DOCUMENTATION.md) - Referência completa da API REST
-- [Technical Architecture](docs/TECHNICAL_ARCHITECTURE.md) - Arquitetura e design do sistema
-- [Project Structure](docs/PROJECT_STRUCTURE.md) - Organização do código
-- [Deployment Guide](docs/DEPLOYMENT_GUIDE.md) - Implantação em produção
-- [Frontend Documentation](frontend/README.md) - Documentação específica do React
+### Main Guides
+- [Quick Start Guide](QUICK_START.md) - Quick setup in 5 minutes
+- [API Documentation](docs/API_DOCUMENTATION.md) - Complete REST API reference
+- [Technical Architecture](docs/TECHNICAL_ARCHITECTURE.md) - System architecture and design
+- [Project Structure](docs/PROJECT_STRUCTURE.md) - Code organization
+- [Deployment Guide](docs/DEPLOYMENT_GUIDE.md) - Production deployment
+- [Frontend Documentation](frontend/README.md) - React specific documentation
 
-### Índice Completo
-Ver [Documentation Index](docs/DOCUMENTATION_INDEX.md) para uma visão completa de toda a documentação disponível.
+### Complete Index
+See [Documentation Index](docs/DOCUMENTATION_INDEX.md) for a complete overview of all available documentation.
 
-##  Estrutura do Projeto
+## Project Structure
 
 ```
 technoSoftware/
 ├── src/main/java/com/empresa/logistica/
-│   ├── controller/          # Controladores REST
-│   ├── service/             # Regras de negócio
-│   ├── repository/          # Acesso a dados
-│   ├── model/               # Entidades JPA
+│   ├── controller/          # REST Controllers
+│   ├── service/             # Business Logic
+│   ├── repository/          # Data Access
+│   ├── model/               # JPA Entities
 │   ├── dto/                 # Data Transfer Objects
-│   └── config/              # Configurações
+│   └── config/              # Configurations
 ├── src/main/resources/
 │   ├── application.properties
-│   └── db/migration/        # Scripts Flyway
+│   └── db/migration/        # Flyway Scripts
 ├── frontend/
 │   ├── src/
-│   │   ├── pages/           # Componentes de página
-│   │   ├── api/             # Serviços de API
-│   │   └── components/      # Componentes reutilizáveis
+│   │   ├── pages/           # Page Components
+│   │   ├── api/             # API Services
+│   │   └── components/      # Reusable Components
 │   └── package.json
-├── docs/                    # Documentação técnica
-├── scripts/                 # Scripts de gerenciamento
-└── README.md               # Este arquivo
+├── docs/                    # Technical Documentation
+├── scripts/                 # Management Scripts
+└── README.md               # This file
 ```
 
-## Suporte e Manutenção
+## Support and Maintenance
 
-### Verificação de Saúde do Sistema
+### System Health Check
 ```bash
 # Backend
 curl http://localhost:8080/api/health
@@ -338,23 +327,21 @@ curl http://localhost:8080/api/health
 curl http://localhost:3000
 ```
 
-### Logs da Aplicação
-- **Backend**: Disponível no terminal onde executou `mvn spring-boot:run`
-- **Frontend**: Disponível no terminal onde executou `npm start`
-- **Arquivos de Log**: Diretório `logs/` na raiz do projeto
+### Application Logs
+- **Backend**: Available in terminal where you ran `mvn spring-boot:run`
+- **Frontend**: Available in terminal where you ran `npm start`
+- **Log Files**: `logs/` directory in project root
 
-### Scripts de Gerenciamento
-O diretório `scripts/` contém utilitários para gerenciamento do sistema:
-- Inicialização e parada do sistema
-- Monitoramento de status
-- Gerenciamento de banco de dados
-- Visualização de logs
+### Management Scripts
+The `scripts/` directory contains utilities for system management:
+- System startup and shutdown
+- Status monitoring
+- Database management
+- Log viewing
 
-Para mais informações, consulte [scripts/SCRIPTS_README.md](scripts/SCRIPTS_README.md).
+For more information, see [scripts/SCRIPTS_README.md](scripts/SCRIPTS_README.md).
 
 ---
 
-**Sistema desenvolvido para TechnoSoftware Assessment**  
-*Última atualização: Agosto 2025*
-
-*Última atualização: Agosto 2025*
+**System developed for TechnoSoftware Assessment**  
+*Last updated: August 2025*

@@ -1,16 +1,16 @@
-#  API Documentation - Sistema de Gerenciamento de Pedidos
+# API Documentation - Orders Management System
 
-##  Informações Gerais
+## General Information
 
 - **Base URL**: `http://localhost:8080/api`
 - **Content-Type**: `application/json`
-- **CORS**: Habilitado para `http://localhost:3000`
-- **Formato de Data**: ISO 8601 (`YYYY-MM-DDTHH:mm:ss`)
+- **CORS**: Enabled for `http://localhost:3000`
+- **Date Format**: ISO 8601 (`YYYY-MM-DDTHH:mm:ss`)
 
 ## Health Check
 
 ### GET `/health`
-Verifica o status da aplicação.
+Checks application status.
 
 **Response:**
 ```
@@ -19,15 +19,15 @@ Orders Management System is running successfully!
 
 ---
 
-##  Clientes API
+## Clients API
 
 ### GET `/clientes`
-Lista todos os clientes com paginação.
+Lists all clients with pagination.
 
 **Query Parameters:**
-- `page` (optional): Número da página (default: 0)
-- `size` (optional): Tamanho da página (default: 20)
-- `sort` (optional): Campo para ordenação (default: "nome")
+- `page` (optional): Page number (default: 0)
+- `size` (optional): Page size (default: 20)
+- `sort` (optional): Sort field (default: "nome")
 
 **Response Example:**
 ```json
@@ -59,10 +59,10 @@ Lista todos os clientes com paginação.
 ```
 
 ### GET `/clientes/{id}`
-Busca um cliente específico por ID.
+Finds specific client by ID.
 
 **Path Parameters:**
-- `id`: ID do cliente (Long)
+- `id`: Client ID (Long)
 
 **Response Example:**
 ```json
@@ -77,13 +77,13 @@ Busca um cliente específico por ID.
 ```
 
 **Error Responses:**
-- `404 Not Found`: Cliente não encontrado
+- `404 Not Found`: Client not found
 
 ### GET `/clientes/{id}/credito`
-Obtém informações de crédito em tempo real para um cliente específico.
+Gets real-time credit information for a specific client.
 
 **Path Parameters:**
-- `id`: ID do cliente (Long)
+- `id`: Client ID (Long)
 
 **Response Example:**
 ```json
@@ -97,65 +97,65 @@ Obtém informações de crédito em tempo real para um cliente específico.
 ```
 
 **Business Logic:**
-- `valorUtilizado`: Soma de todos os pedidos aprovados dos últimos 30 dias
-- `saldoDisponivel`: Limite de crédito menos valor utilizado
-- Cálculo baseado na data do pedido (últimos 30 dias a partir da data atual)
+- `valorUtilizado`: Sum of all approved orders from last 30 days
+- `saldoDisponivel`: Credit limit minus used value
+- Calculation based on order date (last 30 days from current date)
 
 **Error Responses:**
-- `404 Not Found`: Cliente não encontrado
+- `404 Not Found`: Client not found
 
 ### POST `/clientes`
-Cria um novo cliente.
+Creates a new client.
 
 **Request Body:**
 ```json
 {
-  "nome": "Novo Cliente",
+  "nome": "New Client",
   "limiteCredito": 20000.00
 }
 ```
 
 **Validation Rules:**
-- `nome`: Obrigatório, 2-150 caracteres
-- `limiteCredito`: Obrigatório, > 0.01
+- `nome`: Required, 2-150 characters
+- `limiteCredito`: Required, > 0.01
 
-**Response:** Cliente criado (201 Created)
+**Response:** Client created (201 Created)
 
 ### PUT `/clientes/{id}`
-Atualiza um cliente existente.
+Updates an existing client.
 
 **Path Parameters:**
-- `id`: ID do cliente
+- `id`: Client ID
 
 **Request Body:**
 ```json
 {
-  "nome": "Nome Atualizado",
+  "nome": "Updated Name",
   "limiteCredito": 25000.00
 }
 ```
 
-**Response:** Cliente atualizado (200 OK)
+**Response:** Client updated (200 OK)
 
 ### DELETE `/clientes/{id}`
-Remove um cliente.
+Removes a client.
 
 **Path Parameters:**
-- `id`: ID do cliente
+- `id`: Client ID
 
 **Response:** 204 No Content
 
 ---
 
-##  Produtos API
+## Products API
 
 ### GET `/produtos`
-Lista todos os produtos com paginação.
+Lists all products with pagination.
 
 **Query Parameters:**
-- `page` (optional): Número da página (default: 0)
-- `size` (optional): Tamanho da página (default: 20)
-- `sort` (optional): Campo para ordenação (default: "nome")
+- `page` (optional): Page number (default: 0)
+- `size` (optional): Page size (default: 20)
+- `sort` (optional): Sort field (default: "nome")
 
 **Response Example:**
 ```json
@@ -178,10 +178,10 @@ Lista todos os produtos com paginação.
 ```
 
 ### GET `/produtos/{id}`
-Busca um produto específico por ID.
+Finds specific product by ID.
 
 **Path Parameters:**
-- `id`: ID do produto (Long)
+- `id`: Product ID (Long)
 
 **Response Example:**
 ```json
@@ -193,7 +193,7 @@ Busca um produto específico por ID.
 ```
 
 ### POST `/produtos`
-Cria um novo produto.
+Creates a new product.
 
 **Request Body:**
 ```json
@@ -204,26 +204,26 @@ Cria um novo produto.
 ```
 
 **Validation Rules:**
-- `nome`: Obrigatório, 2-150 caracteres
-- `preco`: Obrigatório, > 0.01
+- `nome`: Required, 2-150 characters
+- `preco`: Required, > 0.01
 
 ### PUT `/produtos/{id}`
-Atualiza um produto existente.
+Updates an existing product.
 
 ### DELETE `/produtos/{id}`
-Remove um produto.
+Removes a product.
 
 ---
 
-##  Pedidos API
+## Orders API
 
 ### GET `/pedidos`
-Lista todos os pedidos com paginação e detalhes completos.
+Lists all orders with pagination and complete details.
 
 **Query Parameters:**
-- `page` (optional): Número da página (default: 0)
-- `size` (optional): Tamanho da página (default: 20)
-- `sort` (optional): Campo para ordenação (default: "dataPedido,desc")
+- `page` (optional): Page number (default: 0)
+- `size` (optional): Page size (default: 20)
+- `sort` (optional): Sort field (default: "dataPedido,desc")
 
 **Response Example:**
 ```json
@@ -258,15 +258,15 @@ Lista todos os pedidos com paginação e detalhes completos.
 ```
 
 ### GET `/pedidos/{id}`
-Busca um pedido específico com todos os detalhes.
+Finds specific order with all details.
 
 **Path Parameters:**
-- `id`: ID do pedido (Long)
+- `id`: Order ID (Long)
 
-**Response:** Dados completos do pedido incluindo itens
+**Response:** Complete order data including items
 
 ### POST `/pedidos`
-Cria um novo pedido com validação automática de crédito.
+Creates a new order with automatic credit validation.
 
 **Request Body:**
 ```json
@@ -286,22 +286,22 @@ Cria um novo pedido com validação automática de crédito.
 ```
 
 **Validation Rules:**
-- `clienteId`: Obrigatório, deve existir
-- `itens`: Array obrigatório, não vazio
-- `itens[].produtoId`: Obrigatório, deve existir
-- `itens[].quantidade`: Obrigatório, >= 1
+- `clienteId`: Required, must exist
+- `itens`: Required array, not empty
+- `itens[].produtoId`: Required, must exist
+- `itens[].quantidade`: Required, >= 1
 
 **Business Rules:**
-1. Sistema calcula valor total standardamente
-2. Compara com limite de crédito do cliente
-3. Define status:
-   - `APROVADO`: se valor_total ≤ limite_credito
-   - `REJEITADO`: se valor_total > limite_credito
-4. Armazena pedido independente do status
+1. System calculates total value automatically
+2. Compares with client credit limit
+3. Sets status:
+   - `APROVADO`: if total_value ≤ credit_limit
+   - `REJEITADO`: if total_value > credit_limit
+4. Stores order regardless of status
 
 **Response Examples:**
 
-**Pedido Aprovado:**
+**Approved Order:**
 ```json
 {
   "id": 14,
@@ -334,7 +334,7 @@ Cria um novo pedido com validação automática de crédito.
 }
 ```
 
-**Pedido Rejeitado:**
+**Rejected Order:**
 ```json
 {
   "id": 15,
@@ -359,35 +359,35 @@ Cria um novo pedido com validação automática de crédito.
 ```
 
 **Error Responses:**
-- `400 Bad Request`: Dados inválidos
-- `404 Not Found`: Cliente ou produto não encontrado
-- `422 Unprocessable Entity`: Regras de negócio violadas
+- `400 Bad Request`: Invalid data
+- `404 Not Found`: Client or product not found
+- `422 Unprocessable Entity`: Business rules violated
 
 ### PUT `/pedidos/{id}`
-Atualiza um pedido existente (limitado).
+Updates an existing order (limited).
 
-**Note:** Apenas alguns campos podem ser atualizados após criação.
+**Note:** Only some fields can be updated after creation.
 
 ### DELETE `/pedidos/{id}`
-Remove um pedido.
+Removes an order.
 
 ---
 
-## 🚨 Códigos de Status HTTP
+## HTTP Status Codes
 
-| Código | Significado | Descrição |
-|--------|-------------|-----------|
-| 200 | OK | Requisição bem-sucedida |
-| 201 | Created | Recurso criado com sucesso |
-| 204 | No Content | Recurso removido com sucesso |
-| 400 | Bad Request | Dados de entrada inválidos |
-| 404 | Not Found | Recurso não encontrado |
-| 422 | Unprocessable Entity | Regra de negócio violada |
-| 500 | Internal Server Error | Erro interno do servidor |
+| Code | Meaning | Description |
+|------|---------|-------------|
+| 200 | OK | Successful request |
+| 201 | Created | Resource successfully created |
+| 204 | No Content | Resource successfully removed |
+| 400 | Bad Request | Invalid input data |
+| 404 | Not Found | Resource not found |
+| 422 | Unprocessable Entity | Business rule violated |
+| 500 | Internal Server Error | Internal server error |
 
-##  Formatos de Erro
+## Error Formats
 
-### Erro de Validação (400)
+### Validation Error (400)
 ```json
 {
   "timestamp": "2025-08-09T21:30:00",
@@ -397,52 +397,52 @@ Remove um pedido.
   "errors": [
     {
       "field": "nome",
-      "message": "O nome é obrigatório"
+      "message": "Name is required"
     }
   ]
 }
 ```
 
-### Erro de Negócio (422)
+### Business Error (422)
 ```json
 {
   "timestamp": "2025-08-09T21:30:00",
   "status": 422,
   "error": "Unprocessable Entity",
-  "message": "Cliente não encontrado"
+  "message": "Client not found"
 }
 ```
 
-### Erro de Não Encontrado (404)
+### Not Found Error (404)
 ```json
 {
   "timestamp": "2025-08-09T21:30:00",
   "status": 404,
   "error": "Not Found",
-  "message": "Cliente com ID 999 não encontrado"
+  "message": "Client with ID 999 not found"
 }
 ```
 
-##  Exemplos de Uso com cURL
+## Usage Examples with cURL
 
-### Listar Clientes
+### List Clients
 ```bash
 curl -X GET http://localhost:8080/api/clientes
 ```
 
-### Criar Cliente
+### Create Client
 ```bash
 curl -X POST http://localhost:8080/api/clientes \
   -H "Content-Type: application/json" \
-  -d '{"nome": "Novo Cliente", "limiteCredito": 15000.00}'
+  -d '{"nome": "New Client", "limiteCredito": 15000.00}'
 ```
 
-### Listar Produtos
+### List Products
 ```bash
 curl -X GET http://localhost:8080/api/produtos
 ```
 
-### Criar Pedido
+### Create Order
 ```bash
 curl -X POST http://localhost:8080/api/pedidos \
   -H "Content-Type: application/json" \
@@ -456,7 +456,7 @@ curl -X POST http://localhost:8080/api/pedidos \
   }'
 ```
 
-### Buscar Pedido por ID
+### Find Order by ID
 ```bash
 curl -X GET http://localhost:8080/api/pedidos/1
 ```
@@ -466,97 +466,97 @@ curl -X GET http://localhost:8080/api/pedidos/1
 curl -X GET http://localhost:8080/api/health
 ```
 
-##  Filtros e Ordenação
+## Filtering and Sorting
 
-### Paginação
+### Pagination
 ```bash
-# Página 2, 10 itens por página
+# Page 2, 10 items per page
 curl "http://localhost:8080/api/clientes?page=1&size=10"
 ```
 
-### Ordenação
+### Sorting
 ```bash
-# Ordenar clientes por limite de crédito (decrescente)
+# Sort clients by credit limit (descending)
 curl "http://localhost:8080/api/clientes?sort=limiteCredito,desc"
 
-# Ordenar pedidos por data (mais recentes primeiro)
+# Sort orders by date (most recent first)
 curl "http://localhost:8080/api/pedidos?sort=dataPedido,desc"
 ```
 
-### Múltiplos Parâmetros
+### Multiple Parameters
 ```bash
 curl "http://localhost:8080/api/pedidos?page=0&size=5&sort=dataPedido,desc"
 ```
 
-##  Testando a API
+## Testing the API
 
-### 1. Cenário de Sucesso - Pedido Aprovado
+### 1. Success Scenario - Approved Order
 ```bash
-# 1. Listar clientes para ver limites
+# 1. List clients to see limits
 curl http://localhost:8080/api/clientes
 
-# 2. Listar produtos para ver preços  
+# 2. List products to see prices  
 curl http://localhost:8080/api/produtos
 
-# 3. Criar pedido dentro do limite (Ana Paula - R$ 30.000)
+# 3. Create order within limit (Ana Paula - R$ 30,000)
 curl -X POST http://localhost:8080/api/pedidos \
   -H "Content-Type: application/json" \
   -d '{
     "clienteId": 4,
     "itens": [{"produtoId": 2, "quantidade": 1}]
   }'
-# Resposta: status "APROVADO" 
+# Response: status "APROVADO" 
 ```
 
-### 2. Cenário de Rejeição - Pedido Rejeitado
+### 2. Rejection Scenario - Rejected Order
 ```bash
-# Criar pedido acima do limite (Maria Santos - R$ 1.000)
+# Create order above limit (Maria Santos - R$ 1,000)
 curl -X POST http://localhost:8080/api/pedidos \
   -H "Content-Type: application/json" \
   -d '{
     "clienteId": 17,
     "itens": [{"produtoId": 1, "quantidade": 2}]
   }'
-# Resposta: status "REJEITADO"
+# Response: status "REJEITADO"
 ```
 
-### 3. Cenário de Erro - Dados Inválidos
+### 3. Error Scenario - Invalid Data
 ```bash
-# Tentar criar pedido sem cliente
+# Try to create order without client
 curl -X POST http://localhost:8080/api/pedidos \
   -H "Content-Type: application/json" \
   -d '{
     "itens": [{"produtoId": 1, "quantidade": 1}]
   }'
-# Resposta: 400 Bad Request
+# Response: 400 Bad Request
 ```
 
-##  Monitoramento e Logs
+## Monitoring and Logs
 
-### Health Check Detalhado
-O endpoint `/health` fornece informações sobre:
-- Status da aplicação
-- Conectividade com banco de dados
-- Tempo de resposta
+### Detailed Health Check
+The `/health` endpoint provides information about:
+- Application status
+- Database connectivity
+- Response time
 
-### Logs da Aplicação
-Os logs incluem:
-- Todas as requisições HTTP
-- Queries SQL executadas
-- Erros e exceções
-- Transações de pedidos
+### Application Logs
+Logs include:
+- All HTTP requests
+- Executed SQL queries
+- Errors and exceptions
+- Order transactions
 
-Para visualizar logs em tempo real:
+To view logs in real time:
 ```bash
-# Se rodando com mvn spring-boot:run
+# If running with mvn spring-boot:run
 tail -f nohup.out
 
-# Ou verificar console onde a aplicação está rodando
+# Or check console where application is running
 ```
 
 ---
 
-##  Configuração para Diferentes Ambientes
+## Configuration for Different Environments
 
 ### Development
 ```properties
@@ -583,4 +583,4 @@ spring.jpa.hibernate.ddl-auto=create-drop
 
 ---
 
-** Para mais informações, consulte a [documentação completa](../README.md) do projeto.**
+**For more information, see the [complete documentation](../README.md) of the project.**
