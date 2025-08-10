@@ -45,10 +45,10 @@ This system processes customer orders with automatic credit limit validation bas
 ### Verify Installations
 
 ```bash
-java -version    # Should show: openjdk version "17.x.x"
-mvn -version     # Should show: Apache Maven 3.8.x
-node --version   # Should show: v18.x.x or higher
-psql --version   # Should show: psql (PostgreSQL) 14.x
+java -version    # Should return: openjdk version "17.x.x"
+mvn -version     # Should return: Apache Maven 3.8.x
+node --version   # Should return: v18.x.x or higher
+psql --version   # Should return: psql (PostgreSQL) 14.x
 ```
 
 ## Installation and Setup
@@ -119,7 +119,7 @@ echo "REACT_APP_ENV=development" >> .env
 
 #### 1. Start Backend
 ```bash
-# In project root (technoSoftware/)
+# In project root (Orders_Management_System-TechnoSoftware/)
 export DB_PASSWORD='logistica2025'
 mvn spring-boot:run
 
@@ -270,13 +270,13 @@ The system comes with pre-loaded test data:
 ### Usage Example
 1. Select "Ana Paula Ferreira" (limit R$ 30,000)
 2. Add "Notebook Dell" + "Mouse Logitech" = R$ 3,250
-3. Submit order → **APPROVED** 
+3. Submit order → **APROVADO** 
 
 or
 
 1. Select "Maria Santos" (limit R$ 1,000) 
 2. Add "Notebook Dell" = R$ 2,800
-3. Submit order → **REJECTED** 
+3. Submit order → **REJEITADO** 
 
 ## Documentation
 
@@ -294,7 +294,7 @@ See [Documentation Index](docs/DOCUMENTATION_INDEX.md) for a complete overview o
 ## Project Structure
 
 ```
-technoSoftware/
+Orders_Management_System-TechnoSoftware/
 ├── src/main/java/com/empresa/logistica/
 │   ├── controller/          # REST Controllers
 │   ├── service/             # Business Logic
@@ -328,20 +328,11 @@ curl http://localhost:3000
 ```
 
 ### Application Logs
-- **Backend**: Available in terminal where you ran `mvn spring-boot:run`
-- **Frontend**: Available in terminal where you ran `npm start`
+- **Backend**: run `mvn spring-boot:run`
+- **Frontend**: run `npm start`
 - **Log Files**: `logs/` directory in project root
-
-### Management Scripts
-The `scripts/` directory contains utilities for system management:
-- System startup and shutdown
-- Status monitoring
-- Database management
-- Log viewing
-
-For more information, see [scripts/SCRIPTS_README.md](scripts/SCRIPTS_README.md).
 
 ---
 
-**System developed for TechnoSoftware Assessment**  
+**System developed for TechnoSoftware**  
 *Last updated: August 2025*
