@@ -48,7 +48,7 @@ Este sistema foi desenvolvido para gerenciar pedidos de clientes com validação
 - **Validação de Dados**: Validações automáticas com Bean Validation
 - **Transações**: Controle transacional para integridade dos dados
 - **Auditoria**: Logs detalhados de todas as operações
-- 🏥 **Health Checks**: Monitoramento de saúde da aplicação
+- **Health Checks**: Monitoramento de saúde da aplicação
 -  **CORS Configurado**: Suporte a requisições cross-origin
 
 ##  Tecnologias
