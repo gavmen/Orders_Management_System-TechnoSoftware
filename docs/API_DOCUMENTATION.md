@@ -7,7 +7,7 @@
 - **CORS**: Habilitado para `http://localhost:3000`
 - **Formato de Data**: ISO 8601 (`YYYY-MM-DDTHH:mm:ss`)
 
-## 🏥 Health Check
+## Health Check
 
 ### GET `/health`
 Verifica o status da aplicação.
@@ -75,6 +75,31 @@ Busca um cliente específico por ID.
   "totalPedidos": null
 }
 ```
+
+**Error Responses:**
+- `404 Not Found`: Cliente não encontrado
+
+### GET `/clientes/{id}/credito`
+Obtém informações de crédito em tempo real para um cliente específico.
+
+**Path Parameters:**
+- `id`: ID do cliente (Long)
+
+**Response Example:**
+```json
+{
+  "clienteId": 1,
+  "clienteNome": "João Silva Santos",
+  "limiteCredito": 15000.00,
+  "valorUtilizado": 10530.00,
+  "saldoDisponivel": 4470.00
+}
+```
+
+**Business Logic:**
+- `valorUtilizado`: Soma de todos os pedidos aprovados dos últimos 30 dias
+- `saldoDisponivel`: Limite de crédito menos valor utilizado
+- Cálculo baseado na data do pedido (últimos 30 dias a partir da data atual)
 
 **Error Responses:**
 - `404 Not Found`: Cliente não encontrado

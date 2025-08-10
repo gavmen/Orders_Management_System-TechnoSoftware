@@ -276,10 +276,13 @@ EOF
 
 ```bash
 # Listar clientes
-curl http://localhost:8080/api/clients
+curl http://localhost:8080/api/clientes
+
+# Obter informações de crédito em tempo real
+curl http://localhost:8080/api/clientes/1/credito
 
 # Listar produtos  
-curl http://localhost:8080/api/products
+curl http://localhost:8080/api/produtos
 
 # Criar pedido (exemplo)
 curl -X POST http://localhost:8080/api/pedidos \
@@ -520,7 +523,7 @@ screen -dmS frontend bash -c "cd frontend && npm start"
 ### Informações de Contato
 
 - **Desenvolvedor**: Gabriel Mendonça
-- **Email**: gabriel@empresa.com
+- **Email**: dev.gabrielmendonca@gmail.com
 - **Repositório**: https://github.com/gavmen/TechnoSoftware-Assetment
 - **Documentação**: https://github.com/gavmen/TechnoSoftware-Assetment/wiki
 

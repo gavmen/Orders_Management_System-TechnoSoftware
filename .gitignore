@@ -36,3 +36,16 @@ target/
 # Pipeline Test Scripts
 test-pipeline.sh
 test-component.sh
+
+# Scripts (Future implementation)
+scripts/config.env
+scripts/SCRIPTS_README.md
+scripts/techno.sh
+scripts/core/start-system.sh
+scripts/core/stop-system.sh
+scripts/database/manage-database.sh
+scripts/lib/common.sh
+scripts/monitoring/show-logs.sh
+scripts/monitoring/status-system.sh
+scripts/test/comprehensive-debug-test.sh
+scripts/utils/setup.sh

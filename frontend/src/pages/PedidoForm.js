@@ -24,8 +24,7 @@ import {
   Divider,
   Snackbar,
   Chip,
-  Fade,
-  Skeleton
+  Fade
 } from '@mui/material';
 import {
   Add as AddIcon,
@@ -50,6 +49,13 @@ const PedidoForm = () => {
   const [quantidade, setQuantidade] = useState(1);
   const [itensPedido, setItensPedido] = useState([]);
   const [selectedClienteDetails, setSelectedClienteDetails] = useState(null);
+  
+  // State for real-time credit balance
+  const [creditUsage, setCreditUsage] = useState({
+    valorUtilizado: 0,
+    saldoDisponivel: 0,
+    loading: false
+  });
   
   // State for UI control
   const [loading, setLoading] = useState(true);
@@ -189,6 +195,42 @@ const PedidoForm = () => {
     };
   }, []);
 
+  // Function to fetch real-time credit usage for selected customer
+  const fetchCustomerCreditUsage = async (clienteId) => {
+    try {
+      setCreditUsage(prev => ({ ...prev, loading: true }));
+      
+      const response = await customerService.getCreditBalance(clienteId);
+      const creditInfo = response.data;
+      
+      setCreditUsage({
+        valorUtilizado: parseFloat(creditInfo.valorUtilizado || 0),
+        saldoDisponivel: parseFloat(creditInfo.saldoDisponivel || 0),
+        loading: false
+      });
+      
+      setSelectedClienteDetails(prev => ({
+        ...prev,
+        valorUtilizado: parseFloat(creditInfo.valorUtilizado || 0),
+        saldoDisponivel: parseFloat(creditInfo.saldoDisponivel || 0)
+      }));
+      
+    } catch (error) {
+      console.error('Error fetching credit usage:', error);
+      setCreditUsage(prev => ({ ...prev, loading: false }));
+    }
+  };
+
+  // Effect to update credit balance display when order items change
+  useEffect(() => {
+    if (selectedCliente && selectedClienteDetails && !creditUsage.loading) {
+      setCreditUsage(prev => ({
+        ...prev,
+        saldoDisponivel: parseFloat(selectedClienteDetails.limiteCredito) - prev.valorUtilizado
+      }));
+    }
+  }, [itensPedido, selectedCliente, selectedClienteDetails, creditUsage.loading, creditUsage.valorUtilizado]);
+
   // Add product to order items
   const handleAddProduto = async () => {
     if (!selectedProduto || quantidade <= 0) {
@@ -325,7 +367,15 @@ const PedidoForm = () => {
       
       // Reset form on success (both approved and rejected orders are "successful" API calls)
       setSelectedCliente('');
+      setSelectedProduto('');
+      setQuantidade(1);
       setItensPedido([]);
+      setSelectedClienteDetails(null);
+      setCreditUsage({
+        valorUtilizado: 0,
+        saldoDisponivel: 0,
+        loading: false
+      });
       
       setMessage({ 
         type: response.data.status === 'APROVADO' ? 'success' : 'error', 
@@ -481,7 +531,7 @@ const PedidoForm = () => {
                 <InputLabel>Cliente</InputLabel>
                 <Select
                   value={selectedCliente}
-                  onChange={(e) => {
+                  onChange={async (e) => {
                     const clienteId = e.target.value;
                     setSelectedCliente(clienteId);
                     // Find and set the selected client details for credit display
@@ -491,6 +541,18 @@ const PedidoForm = () => {
                     // Clear any existing items when changing client to avoid confusion
                     if (clienteId !== selectedCliente) {
                       setItensPedido([]);
+                    }
+                    
+                    // Fetch real-time credit usage for the selected customer
+                    if (clienteId && isOnline && !networkError) {
+                      await fetchCustomerCreditUsage(clienteId);
+                    } else if (clienteId) {
+                      // Reset credit usage state if offline
+                      setCreditUsage({
+                        valorUtilizado: 0,
+                        saldoDisponivel: cliente ? parseFloat(cliente.limiteCredito) : 0,
+                        loading: false
+                      });
                     }
                   }}
                   label="Cliente"
@@ -512,114 +574,134 @@ const PedidoForm = () => {
         </Grid>
 
         {/* Credit Information Display */}
-        {selectedClienteDetails && (
-          <Grid size={12}>
-            <Fade in={true}>
-              <Card sx={{ bgcolor: 'primary.light', color: 'primary.contrastText', mb: 1 }}>
-                <CardContent>
-                  <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center' }}>
-                     Informações de Crédito - {selectedClienteDetails.nome}
-                  </Typography>
-                  <Grid container spacing={2}>
-                    <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-                      <Box sx={{ textAlign: 'center', p: 1 }}>
-                        <Typography variant="caption" display="block">
-                           Limite de Crédito
-                        </Typography>
-                        <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
-                          R$ {parseFloat(selectedClienteDetails.limiteCredito || 0).toLocaleString('pt-BR', {minimumFractionDigits: 2})}
-                        </Typography>
-                      </Box>
+        <Grid size={12}>
+          <Fade in={true}>
+            <Card sx={{ bgcolor: 'primary.light', color: 'primary.contrastText', mb: 1 }}>
+              <CardContent>
+                <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center' }}>
+                  Informações de Crédito {selectedClienteDetails && `- ${selectedClienteDetails.nome}`}
+                </Typography>
+                {selectedClienteDetails ? (
+                  <>
+                    <Grid container spacing={2}>
+                      <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+                        <Box sx={{ textAlign: 'center', p: 1 }}>
+                          <Typography variant="caption" display="block">
+                            Limite de Crédito
+                          </Typography>
+                          <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
+                            R$ {parseFloat(selectedClienteDetails.limiteCredito || 0).toLocaleString('pt-BR', {minimumFractionDigits: 2})}
+                          </Typography>
+                        </Box>
+                      </Grid>
+                      <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+                        <Box sx={{ textAlign: 'center', p: 1 }}>
+                          <Typography variant="caption" display="block">
+                            Valor Utilizado
+                          </Typography>
+                          {creditUsage.loading ? (
+                            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '32px' }}>
+                              <CircularProgress size={20} color="inherit" />
+                              <Typography variant="body2" sx={{ ml: 1 }}>
+                                Carregando...
+                              </Typography>
+                            </Box>
+                          ) : (
+                            <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
+                              R$ {creditUsage.valorUtilizado.toLocaleString('pt-BR', {minimumFractionDigits: 2})}
+                            </Typography>
+                          )}
+                        </Box>
+                      </Grid>
+                      <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+                        <Box sx={{ textAlign: 'center', p: 1 }}>
+                          <Typography variant="caption" display="block">
+                            Saldo Disponível
+                          </Typography>
+                          {creditUsage.loading ? (
+                            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '32px' }}>
+                              <CircularProgress size={20} color="inherit" />
+                              <Typography variant="body2" sx={{ ml: 1 }}>
+                                Carregando...
+                              </Typography>
+                            </Box>
+                          ) : (
+                            <Typography 
+                              variant="h6" 
+                              sx={{ 
+                                fontWeight: 'bold',
+                                color: creditUsage.saldoDisponivel >= calculateTotal() ? 'success.main' : 'error.main'
+                              }}
+                            >
+                              R$ {creditUsage.saldoDisponivel.toLocaleString('pt-BR', {minimumFractionDigits: 2})}
+                            </Typography>
+                          )}
+                        </Box>
+                      </Grid>
+                      <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+                        <Box sx={{ textAlign: 'center', p: 1 }}>
+                          <Typography variant="caption" display="block">
+                            Pedido Atual
+                          </Typography>
+                          <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
+                            R$ {calculateTotal().toLocaleString('pt-BR', {minimumFractionDigits: 2})}
+                          </Typography>
+                        </Box>
+                      </Grid>
                     </Grid>
-                    <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-                      <Box sx={{ textAlign: 'center', p: 1 }}>
-                        <Typography variant="caption" display="block">
-                           Valor Utilizado
-                        </Typography>
-                        <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
-                          {selectedClienteDetails.valorUtilizado ? 
-                            `R$ ${parseFloat(selectedClienteDetails.valorUtilizado).toLocaleString('pt-BR', {minimumFractionDigits: 2})}` :
-                            'Calculando...'
+                    
+                    {/* Credit utilization progress bar */}
+                    <Box sx={{ mt: 2 }}>
+                      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+                        <Typography variant="caption">Utilização do Crédito</Typography>
+                        <Typography variant="caption">
+                          {creditUsage.loading ? 
+                            'Calculando...' :
+                            `${(((creditUsage.valorUtilizado + calculateTotal()) / parseFloat(selectedClienteDetails.limiteCredito || 1)) * 100).toFixed(1)}%`
                           }
                         </Typography>
                       </Box>
-                    </Grid>
-                    <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-                      <Box sx={{ textAlign: 'center', p: 1 }}>
-                        <Typography variant="caption" display="block">
-                           Saldo Disponível
-                        </Typography>
-                        <Typography 
-                          variant="h6" 
-                          sx={{ 
-                            fontWeight: 'bold',
-                            color: selectedClienteDetails.saldoDisponivel ? 
-                              (parseFloat(selectedClienteDetails.saldoDisponivel) > 0 ? 'success.main' : 'error.main') :
-                              'text.primary'
-                          }}
-                        >
-                          {selectedClienteDetails.saldoDisponivel ? 
-                            `R$ ${parseFloat(selectedClienteDetails.saldoDisponivel).toLocaleString('pt-BR', {minimumFractionDigits: 2})}` :
-                            `R$ ${parseFloat(selectedClienteDetails.limiteCredito || 0).toLocaleString('pt-BR', {minimumFractionDigits: 2})} (estimado)`
-                          }
-                        </Typography>
-                      </Box>
-                    </Grid>
-                    <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-                      <Box sx={{ textAlign: 'center', p: 1 }}>
-                        <Typography variant="caption" display="block">
-                           Pedido Atual
-                        </Typography>
-                        <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
-                          R$ {calculateTotal().toLocaleString('pt-BR', {minimumFractionDigits: 2})}
-                        </Typography>
-                      </Box>
-                    </Grid>
-                  </Grid>
-                  
-                  {/* Credit utilization progress bar */}
-                  <Box sx={{ mt: 2 }}>
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
-                      <Typography variant="caption">Utilização do Crédito</Typography>
-                      <Typography variant="caption">
-                        {selectedClienteDetails.valorUtilizado ? 
-                          `${((parseFloat(selectedClienteDetails.valorUtilizado) + calculateTotal()) / parseFloat(selectedClienteDetails.limiteCredito || 1) * 100).toFixed(1)}%` :
-                          `${(calculateTotal() / parseFloat(selectedClienteDetails.limiteCredito || 1) * 100).toFixed(1)}% (apenas pedido atual)`
-                        }
-                      </Typography>
-                    </Box>
-                    <Box
-                      sx={{
-                        width: '100%',
-                        height: 8,
-                        bgcolor: 'rgba(255,255,255,0.3)',
-                        borderRadius: 4,
-                        overflow: 'hidden'
-                      }}
-                    >
                       <Box
                         sx={{
-                          height: '100%',
-                          bgcolor: (() => {
-                            const utilizacao = selectedClienteDetails.valorUtilizado ? 
-                              (parseFloat(selectedClienteDetails.valorUtilizado) + calculateTotal()) / parseFloat(selectedClienteDetails.limiteCredito || 1) :
-                              calculateTotal() / parseFloat(selectedClienteDetails.limiteCredito || 1);
-                            return utilizacao <= 0.8 ? 'success.main' : utilizacao <= 0.95 ? 'warning.main' : 'error.main';
-                          })(),
-                          width: `${Math.min(100, (selectedClienteDetails.valorUtilizado ? 
-                            (parseFloat(selectedClienteDetails.valorUtilizado) + calculateTotal()) / parseFloat(selectedClienteDetails.limiteCredito || 1) * 100 :
-                            calculateTotal() / parseFloat(selectedClienteDetails.limiteCredito || 1) * 100
-                          ))}%`,
-                          transition: 'all 0.3s ease-in-out'
+                          width: '100%',
+                          height: 8,
+                          bgcolor: 'rgba(255,255,255,0.3)',
+                          borderRadius: 4,
+                          overflow: 'hidden'
                         }}
-                      />
+                      >
+                        <Box
+                          sx={{
+                            height: '100%',
+                            bgcolor: (() => {
+                              if (creditUsage.loading) return 'info.main';
+                              const utilizacao = (creditUsage.valorUtilizado + calculateTotal()) / parseFloat(selectedClienteDetails.limiteCredito || 1);
+                              return utilizacao <= 0.8 ? 'success.main' : utilizacao <= 0.95 ? 'warning.main' : 'error.main';
+                            })(),
+                            width: `${Math.min(100, creditUsage.loading ? 0 : ((creditUsage.valorUtilizado + calculateTotal()) / parseFloat(selectedClienteDetails.limiteCredito || 1) * 100))}%`,
+                            transition: 'all 0.3s ease-in-out'
+                          }}
+                        />
+                      </Box>
                     </Box>
+                  </>
+                ) : (
+                  <Box sx={{ textAlign: 'center', p: 3 }}>
+                    <Typography variant="body1" sx={{ opacity: 0.7 }}>
+                      Selecione um cliente acima para visualizar as informações de crédito
+                    </Typography>
+                    {/* <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2, mt: 2, opacity: 0.5 }}>
+                      <Chip label=" Limite" variant="outlined" size="small" />
+                      <Chip label="Utilizado" variant="outlined" size="small" />
+                      <Chip label="Disponível" variant="outlined" size="small" />
+                      <Chip label="Pedido" variant="outlined" size="small" />
+                    </Box> */}
                   </Box>
-                </CardContent>
-              </Card>
-            </Fade>
-          </Grid>
-        )}
+                )}
+              </CardContent>
+            </Card>
+          </Fade>
+        </Grid>
 
         {/* Product Selection */}
         <Grid size={12}>
@@ -758,6 +840,48 @@ const PedidoForm = () => {
                 4. Finalizar Pedido
               </Typography>
               <Divider sx={{ mb: 2 }} />
+              
+              {/* Credit balance warning */}
+              {selectedCliente && itensPedido.length > 0 && !creditUsage.loading && (
+                <Box sx={{ mb: 2 }}>
+                  {creditUsage.saldoDisponivel < calculateTotal() ? (
+                    <Alert severity="error" sx={{ mb: 2 }}>
+                      <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
+                        Crédito Insuficiente!
+                      </Typography>
+                      <Typography variant="body2">
+                        Valor do pedido: R$ {calculateTotal().toLocaleString('pt-BR', {minimumFractionDigits: 2})}
+                        <br />
+                        Saldo disponível: R$ {creditUsage.saldoDisponivel.toLocaleString('pt-BR', {minimumFractionDigits: 2})}
+                        <br />
+                        Déficit: R$ {(calculateTotal() - creditUsage.saldoDisponivel).toLocaleString('pt-BR', {minimumFractionDigits: 2})}
+                      </Typography>
+                      <Typography variant="body2" sx={{ mt: 1, fontStyle: 'italic' }}>
+                        Este pedido será rejeitado por exceder o limite de crédito disponível.
+                      </Typography>
+                    </Alert>
+                  ) : creditUsage.saldoDisponivel < calculateTotal() * 1.1 ? (
+                    <Alert severity="warning" sx={{ mb: 2 }}>
+                      <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
+                        Saldo Baixo
+                      </Typography>
+                      <Typography variant="body2">
+                        Você está próximo do seu limite de crédito. Saldo disponível após este pedido: R$ {(creditUsage.saldoDisponivel - calculateTotal()).toLocaleString('pt-BR', {minimumFractionDigits: 2})}
+                      </Typography>
+                    </Alert>
+                  ) : (
+                    <Alert severity="success" sx={{ mb: 2 }}>
+                      <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
+                        Crédito OK
+                      </Typography>
+                      <Typography variant="body2">
+                        Pedido aprovado! Saldo disponível após este pedido: R$ {(creditUsage.saldoDisponivel - calculateTotal()).toLocaleString('pt-BR', {minimumFractionDigits: 2})}
+                      </Typography>
+                    </Alert>
+                  )}
+                </Box>
+              )}
+              
               <Box display="flex" justifyContent="center">
                 <Button
                   variant="contained"

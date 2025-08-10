@@ -1,102 +1,55 @@
 # Sistema de Gerenciamento de Pedidos
 
-Um sistema completo para gerenciamento de pedidos com validação automática de limite de crédito, desenvolvido com **Spring Boot 3.2** e **React 19**.
+Sistema completo para gerenciamento de pedidos com validação automática de limite de crédito, desenvolvido com Spring Boot 3.2 e React 19.
 
 ![Status](https://img.shields.io/badge/Status-Production_Ready-green)
 ![Backend](https://img.shields.io/badge/Backend-Spring_Boot_3.2-brightgreen)
 ![Frontend](https://img.shields.io/badge/Frontend-React_19-blue)
 ![Database](https://img.shields.io/badge/Database-PostgreSQL_14-blue)
 
-## Índice
+## Visão Geral
 
-- [Sobre o Projeto](#sobre-o-projeto)
-- [Funcionalidades](#funcionalidades)
-- [Tecnologias](#tecnologias)
-- [Pré-requisitos](#pré-requisitos)
-- [Instalação e Configuração](#instalação-e-configuração)
-- [Como Executar](#como-executar)
-- [API Endpoints](#api-endpoints)
-- [Estrutura do Projeto](#estrutura-do-projeto)
-- [Testes](#testes)
-- [Documentação Adicional](#documentação-adicional)
+Este sistema processa pedidos de clientes com validação automática de limite de crédito baseada no histórico dos últimos 30 dias. A arquitetura segue padrões modernos com API REST no backend e interface responsiva no frontend.
 
-## Sobre o Projeto
+### Funcionalidades Principais
 
-Este sistema foi desenvolvido para gerenciar pedidos de clientes com validação automática de limite de crédito. O sistema processa pedidos em tempo real, aprovando ou rejeitando com base no limite de crédito disponível do cliente.
+- **Validação de Crédito**: Aprovação/rejeição automática baseada em limites de crédito
+- **Interface Responsiva**: Frontend moderno com Material-UI
+- **API RESTful**: Backend robusto com documentação OpenAPI
+- **Auditoria Completa**: Registro de todos os pedidos para análise
+- **Monitoramento**: Health checks e logs estruturados
+- **Tempo Real**: Consulta de saldo de crédito atualizada dinamicamente
 
-### Características Principais:
-- **Validação Automática de Crédito**: Pedidos são aprovados/rejeitados standardamente
-- **Interface Moderna**: Frontend em React com Material-UI
-- **API RESTful**: Backend robusto com Spring Boot
-- **Auditoria Completa**: Todos os pedidos são armazenados para auditoria
-- **Performance Otimizada**: Consultas otimizadas e cache implementado
-- **Monitoramento**: Health checks e logs detalhados
-
-## Funcionalidades
-
-### Frontend (React)
-- **Formulário de Pedidos**: Interface intuitiva para criação de pedidos
-- **Gestão de Clientes**: Visualização de clientes e seus limites de crédito
-- **Catálogo de Produtos**: Lista de produtos disponíveis com preços
-- **Feedback em Tempo Real**: Notificações Snackbar para todas as operações
-- **Estados de Loading**: Indicadores visuais para todas as operações
-- **Detecção de Conectividade**: Monitora status da conexão com o servidor
-- **Design Responsivo**: Funciona perfeitamente em desktop e mobile
-
-### Backend (Spring Boot)
-- **Arquitetura em Camadas**: Controller → Service → Repository
-- **Validação de Dados**: Validações automáticas com Bean Validation
-- **Transações**: Controle transacional para integridade dos dados
-- **Auditoria**: Logs detalhados de todas as operações
-- **Health Checks**: Monitoramento de saúde da aplicação
--  **CORS Configurado**: Suporte a requisições cross-origin
-
-##  Tecnologias
+## Stack Tecnológico
 
 ### Backend
-- **Java 17**
-- **Spring Boot 3.2.0**
-- **Spring Data JPA** - Mapeamento objeto-relacional
-- **PostgreSQL 14** - Banco de dados principal
-- **Flyway** - Controle de versão do banco
-- **Maven** - Gerenciamento de dependências
-- **Jakarta Validation** - Validação de dados
+- **Java 17** com Spring Boot 3.2.0
+- **Spring Data JPA** para persistência de dados
+- **PostgreSQL 14** como banco de dados
+- **Flyway** para migração de schema
+- **Maven** para gerenciamento de dependências
 
-### Frontend  
-- **React 19.1.1**
-- **Material-UI 7.3.1** - Componentes e design system
-- **Axios 1.11.0** - Cliente HTTP
-- **JavaScript ES6+**
-- **CSS3** com temas customizados
-- **NPM** - Gerenciamento de pacotes
+### Frontend
+- **React 19.1.1** com hooks modernos
+- **Material-UI 7.3.1** para componentes UI
+- **Axios 1.11.0** para comunicação HTTP
+- **NPM** para gerenciamento de pacotes
 
-### Infraestrutura
-- **PostgreSQL 14** - Banco de dados
-- **Git** - Controle de versão
-- **Docker** (opcional) - Containerização
+## Pré-requisitos
 
-##  Pré-requisitos
-
-Antes de executar o projeto, você precisará ter instalado:
-
-### Essenciais
 - **Java 17+** - [Download OpenJDK](https://adoptium.net/)
 - **Maven 3.8+** - [Download Maven](https://maven.apache.org/download.cgi)
 - **Node.js 18+** - [Download Node.js](https://nodejs.org/)
-- **NPM 9+** (incluído com Node.js)
 - **PostgreSQL 14+** - [Download PostgreSQL](https://www.postgresql.org/download/)
 
 ### Verificar Instalações
+
 ```bash
-# Verificar Java
-java -version
-# Deve mostrar: openjdk version "17.x.x"
-
-# Verificar Maven  
-mvn -version
-# Deve mostrar: Apache Maven 3.8.x
-
-# Verificar Node.js
+java -version    # Deve mostrar: openjdk version "17.x.x"
+mvn -version     # Deve mostrar: Apache Maven 3.8.x
+node --version   # Deve mostrar: v18.x.x ou superior
+psql --version   # Deve mostrar: psql (PostgreSQL) 14.x
+```
 node --version
 # Deve mostrar: v18.x.x ou superior
 
@@ -336,6 +289,19 @@ ou
 2. Adicione "Notebook Dell" = R$ 2.800
 3. Submeta o pedido → **REJEITADO** 
 
+## Documentação
+
+### Guias Principais
+- [Quick Start Guide](QUICK_START.md) - Setup rápido em 5 minutos
+- [API Documentation](docs/API_DOCUMENTATION.md) - Referência completa da API REST
+- [Technical Architecture](docs/TECHNICAL_ARCHITECTURE.md) - Arquitetura e design do sistema
+- [Project Structure](docs/PROJECT_STRUCTURE.md) - Organização do código
+- [Deployment Guide](docs/DEPLOYMENT_GUIDE.md) - Implantação em produção
+- [Frontend Documentation](frontend/README.md) - Documentação específica do React
+
+### Índice Completo
+Ver [Documentation Index](docs/DOCUMENTATION_INDEX.md) para uma visão completa de toda a documentação disponível.
+
 ##  Estrutura do Projeto
 
 ```
@@ -351,48 +317,44 @@ technoSoftware/
 │   ├── application.properties
 │   └── db/migration/        # Scripts Flyway
 ├── frontend/
-│   ├── public/
 │   ├── src/
-│   │   ├── components/      # Componentes React
-│   │   ├── pages/           # Páginas da aplicação
+│   │   ├── pages/           # Componentes de página
 │   │   ├── api/             # Serviços de API
-│   │   └── utils/           # Utilitários
-│   ├── package.json
-│   └── .env
-├── docs/                    # Documentação
-├── pom.xml                  # Dependências Maven
+│   │   └── components/      # Componentes reutilizáveis
+│   └── package.json
+├── docs/                    # Documentação técnica
+├── scripts/                 # Scripts de gerenciamento
 └── README.md               # Este arquivo
 ```
 
-##  Próximos Passos
+## Suporte e Manutenção
 
-Para expandir o sistema, considere implementar:
+### Verificação de Saúde do Sistema
+```bash
+# Backend
+curl http://localhost:8080/api/health
 
--  **Autenticação e Autorização** com Spring Security
--  **Dashboard Analytics** com gráficos de vendas
--  **Notificações por Email** para pedidos aprovados/rejeitados
--  **Gestão de Estoque** com controle de quantidade
--  **Integração de Pagamentos** com gateways
--  **App Mobile** com React Native
--  **Containerização** com Docker
--  **Deploy na Nuvem** (AWS, Azure, GCP)
+# Frontend  
+curl http://localhost:3000
+```
 
-##  Suporte
+### Logs da Aplicação
+- **Backend**: Disponível no terminal onde executou `mvn spring-boot:run`
+- **Frontend**: Disponível no terminal onde executou `npm start`
+- **Arquivos de Log**: Diretório `logs/` na raiz do projeto
 
-Se você encontrar problemas:
+### Scripts de Gerenciamento
+O diretório `scripts/` contém utilitários para gerenciamento do sistema:
+- Inicialização e parada do sistema
+- Monitoramento de status
+- Gerenciamento de banco de dados
+- Visualização de logs
 
-1. Verifique a seção [Solução de Problemas](#solução-de-problemas)
-2. Consulte os logs:
-   - Backend: Terminal onde executou `mvn spring-boot:run`
-   - Frontend: Terminal onde executou `npm start`
-3. Verifique se todos os serviços estão rodando:
-   ```bash
-   curl http://localhost:8080/api/health
-   curl http://localhost:3000
-   ```
+Para mais informações, consulte [scripts/SCRIPTS_README.md](scripts/SCRIPTS_README.md).
 
 ---
 
-** Sistema desenvolvido com Spring Boot 3.2 + React 19 + PostgreSQL 14**
+**Sistema desenvolvido para TechnoSoftware Assessment**  
+*Última atualização: Agosto 2025*
 
 *Última atualização: Agosto 2025*

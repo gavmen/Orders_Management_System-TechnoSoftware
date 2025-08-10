@@ -1,53 +1,87 @@
-# Getting Started with Create React App
+# Orders Management System - Frontend
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+React-based frontend for the Customer Orders Management System. This application provides an intuitive interface for managing customer orders with real-time credit limit validation.
 
-## Available Scripts
+## Technology Stack
 
-In the project directory, you can run:
+- **React 19.1.1** - Frontend framework
+- **Material-UI 7.3.1** - Component library and design system
+- **Axios 1.11.0** - HTTP client for API communication
+- **JavaScript ES6+** - Programming language
 
-### `npm start`
+## Features
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- **Order Creation**: Interactive form for creating customer orders
+- **Credit Validation**: Real-time credit limit checking and balance display
+- **Product Selection**: Dynamic product catalog with pricing
+- **Customer Management**: Customer selection with credit information
+- **Responsive Design**: Works on desktop and mobile devices
+- **Error Handling**: Comprehensive error messages and network status monitoring
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Prerequisites
 
-### `npm test`
+- Node.js 18 or higher
+- NPM 9 or higher
+- Backend API running on port 8080
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Installation
 
-### `npm run build`
+```bash
+cd frontend
+npm install
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Development
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+```bash
+npm start
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Runs the development server on http://localhost:3000
 
-### `npm run eject`
+## Build for Production
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+```bash
+npm run build
+```
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+Creates optimized production build in the `build` folder.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+## Project Structure
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+```
+src/
+├── api/                 # API configuration and services
+│   ├── api.js          # Axios configuration
+│   └── services.js     # Service layer for API calls
+├── components/         # Reusable UI components
+├── pages/             # Page components
+│   └── PedidoForm.js  # Main order form component
+├── services/          # Business logic services
+├── utils/             # Utility functions
+├── theme.js           # Material-UI theme configuration
+└── App.js             # Root application component
+```
 
-## Learn More
+## API Integration
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+The frontend communicates with the backend API through service layers:
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+- **customerService**: Customer operations and credit balance
+- **productService**: Product catalog management
+- **orderService**: Order creation and management
 
-### Code Splitting
+## Configuration
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+API base URL is configured in `src/api/api.js` and defaults to `http://localhost:8080/api`.
+
+## Testing
+
+```bash
+npm test
+```
+
+Runs the test runner in interactive watch mode.
 
 ### Analyzing the Bundle Size
 

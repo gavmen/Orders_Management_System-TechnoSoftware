@@ -8,6 +8,9 @@ export const customerService = {
   // Get customer by ID
   getById: (id) => api.get(`/api/clientes/${id}`),
   
+  // Get customer credit balance information
+  getCreditBalance: (id) => api.get(`/api/clientes/${id}/credito`),
+  
   // Create new customer
   create: (customerData) => api.post('/api/clientes', customerData),
   

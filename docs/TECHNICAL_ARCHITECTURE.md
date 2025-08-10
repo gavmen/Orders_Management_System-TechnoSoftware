@@ -65,11 +65,9 @@ O Sistema de Gerenciamento de Pedidos segue uma arquitetura de três camadas (3-
 ├─────────────────┤         ├─────────────────┤         ├─────────────────┤
 │ id (PK)         │◄────────┤ cliente_id (FK) │         │ id (PK)         │
 │ nome            │         │ id (PK)         │         │ nome            │
-│ limite_credito  │         │ data_criacao    │         │ preco           │
-│ data_criacao    │         │ status          │         │ data_criacao    │
-│ data_atualizacao│         │ total           │         │ data_atualizacao│
-└─────────────────┘         │ data_criacao    │         └─────────────────┘
-                            │ data_atualizacao│                 ▲
+│ limite_credito  │         │ data_pedido     │         │ preco           │
+└─────────────────┘         │ status          │         └─────────────────┘
+                            │ valor_total     │                 ▲
                             └─────────────────┘                 │
                                      │                          │
                                      ▼                          │
@@ -80,7 +78,6 @@ O Sistema de Gerenciamento de Pedidos segue uma arquitetura de três camadas (3-
                             │ pedido_id (FK)  │─────────────────┘
                             │ produto_id (FK) │
                             │ quantidade      │
-                            │ preco_unitario  │
                             │ subtotal        │
                             └─────────────────┘
 ```
@@ -91,10 +88,9 @@ O Sistema de Gerenciamento de Pedidos segue uma arquitetura de três camadas (3-
 ```sql
 CREATE TABLE cliente (
     id BIGSERIAL PRIMARY KEY,
-    nome VARCHAR(255) NOT NULL,
-    limite_credito DECIMAL(10,2) NOT NULL DEFAULT 0.00,
-    data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    data_atualizacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    nome VARCHAR(100) NOT NULL,
+    limite_credito DECIMAL(15,2) NOT NULL,
+    CONSTRAINT chk_limite_credito CHECK (limite_credito >= 0)
 );
 ```
 
@@ -102,10 +98,9 @@ CREATE TABLE cliente (
 ```sql
 CREATE TABLE produto (
     id BIGSERIAL PRIMARY KEY,
-    nome VARCHAR(255) NOT NULL,
-    preco DECIMAL(10,2) NOT NULL,
-    data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    data_atualizacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    nome VARCHAR(255) NOT NULL UNIQUE,
+    preco DECIMAL(15,2) NOT NULL,
+    CONSTRAINT chk_preco CHECK (preco >= 0)
 );
 ```
 
@@ -114,11 +109,12 @@ CREATE TABLE produto (
 CREATE TABLE pedido (
     id BIGSERIAL PRIMARY KEY,
     cliente_id BIGINT NOT NULL,
-    data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    data_atualizacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    status VARCHAR(50) DEFAULT 'ATIVO',
-    total DECIMAL(10,2) DEFAULT 0.00,
-    FOREIGN KEY (cliente_id) REFERENCES cliente(id)
+    data_pedido TIMESTAMP NOT NULL,
+    status VARCHAR(20) NOT NULL,
+    valor_total DECIMAL(15,2) NOT NULL,
+    CONSTRAINT fk_pedido_cliente FOREIGN KEY (cliente_id) REFERENCES cliente(id),
+    CONSTRAINT chk_valor_total CHECK (valor_total >= 0),
+    CONSTRAINT chk_status CHECK (status IN ('APROVADO', 'REJEITADO'))
 );
 ```
 
@@ -129,10 +125,12 @@ CREATE TABLE item_pedido (
     pedido_id BIGINT NOT NULL,
     produto_id BIGINT NOT NULL,
     quantidade INTEGER NOT NULL,
-    preco_unitario DECIMAL(10,2) NOT NULL,
-    subtotal DECIMAL(10,2) NOT NULL,
-    FOREIGN KEY (pedido_id) REFERENCES pedido(id),
-    FOREIGN KEY (produto_id) REFERENCES produto(id)
+    subtotal DECIMAL(15,2) NOT NULL,
+    CONSTRAINT fk_item_pedido_pedido FOREIGN KEY (pedido_id) REFERENCES pedido(id) ON DELETE CASCADE,
+    CONSTRAINT fk_item_pedido_produto FOREIGN KEY (produto_id) REFERENCES produto(id),
+    CONSTRAINT chk_quantidade CHECK (quantidade > 0),
+    CONSTRAINT chk_subtotal CHECK (subtotal >= 0),
+    CONSTRAINT uk_pedido_produto UNIQUE (pedido_id, produto_id)
 );
 ```
 
@@ -174,14 +172,16 @@ Frontend                Backend                Database
 ### 2. Validação de Crédito
 
 ```sql
--- Cálculo do crédito disponível
+-- Cálculo do crédito disponível com janela de 30 dias
 SELECT 
     c.limite_credito,
-    COALESCE(SUM(p.total), 0) as valor_utilizado,
-    (c.limite_credito - COALESCE(SUM(p.total), 0)) as saldo_disponivel
+    COALESCE(SUM(p.valor_total), 0) as valor_utilizado,
+    (c.limite_credito - COALESCE(SUM(p.valor_total), 0)) as saldo_disponivel
 FROM cliente c
 LEFT JOIN pedido p ON c.id = p.cliente_id 
-WHERE c.id = ? AND p.status = 'ATIVO'
+    AND p.status = 'APROVADO'
+    AND p.data_pedido >= (CURRENT_DATE - INTERVAL '30 days')
+WHERE c.id = ?
 GROUP BY c.id, c.limite_credito;
 ```
 
@@ -189,20 +189,21 @@ GROUP BY c.id, c.limite_credito;
 
 ### Clientes
 ```
-GET    /api/clients           - Listar todos os clientes
-GET    /api/clients/{id}      - Obter cliente específico
-POST   /api/clients           - Criar novo cliente
-PUT    /api/clients/{id}      - Atualizar cliente
-DELETE /api/clients/{id}      - Excluir cliente
+GET    /api/clientes          - Listar todos os clientes
+GET    /api/clientes/{id}     - Obter cliente específico
+GET    /api/clientes/{id}/credito - Obter informações de crédito em tempo real
+POST   /api/clientes          - Criar novo cliente
+PUT    /api/clientes/{id}     - Atualizar cliente
+DELETE /api/clientes/{id}     - Excluir cliente
 ```
 
 ### Produtos
 ```
-GET    /api/products          - Listar todos os produtos
-GET    /api/products/{id}     - Obter produto específico
-POST   /api/products          - Criar novo produto
-PUT    /api/products/{id}     - Atualizar produto
-DELETE /api/products/{id}     - Excluir produto
+GET    /api/produtos          - Listar todos os produtos
+GET    /api/produtos/{id}     - Obter produto específico
+POST   /api/produtos          - Criar novo produto
+PUT    /api/produtos/{id}     - Atualizar produto
+DELETE /api/produtos/{id}     - Excluir produto
 ```
 
 ### Pedidos
@@ -474,4 +475,4 @@ public class OpenApiConfig {
 
 **Última atualização**: 09 de Agosto de 2025  
 **Versão**: 1.0.0  
-**Arquiteto**: Gabriel Mendonça
+**Autor**: Gabriel Mendonça

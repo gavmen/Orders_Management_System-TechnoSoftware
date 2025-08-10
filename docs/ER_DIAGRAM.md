@@ -74,15 +74,25 @@ erDiagram
 ## Regras de Negócio
 
 ### Validação de Crédito
-- Quando um pedido é criado, o sistema calcula o valor total
-- Se valor_total ≤ limite_credito do cliente: status = 'APROVADO'
-- Se valor_total > limite_credito do cliente: status = 'REJEITADO'
-- Pedidos rejeitados são armazenados no banco para auditoria
+- O sistema calcula o crédito utilizado baseado nos pedidos aprovados dos últimos 30 dias
+- Quando um pedido é criado:
+  - Calcula valor_utilizado = soma de pedidos aprovados dos últimos 30 dias
+  - Calcula saldo_disponivel = limite_credito - valor_utilizado
+  - Se valor_total_pedido ≤ saldo_disponivel: status = 'APROVADO'
+  - Se valor_total_pedido > saldo_disponivel: status = 'REJEITADO'
+- Pedidos rejeitados são armazenados para auditoria, mas não afetam o cálculo de crédito
+- A janela de 30 dias é calculada a partir da data atual (rolling window)
+
+### Consulta de Saldo em Tempo Real
+- Endpoint `/clientes/{id}/credito` fornece informações atualizadas
+- Cálculo dinâmico baseado na data atual
+- Retorna: limite_credito, valor_utilizado, saldo_disponivel
 
 ### Cálculos Automáticos
 - **subtotal** = quantidade × preco_unitario
 - **valor_total** = soma de todos os subtotais dos itens do pedido
 - **preco_unitario** é copiado do produto no momento da criação para manter histórico
+- **valor_utilizado** = soma dos valores de pedidos aprovados nos últimos 30 dias
 
 ### Constraints e Validações
 - Todos os campos obrigatórios possuem validação NOT NULL
